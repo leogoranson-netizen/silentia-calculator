@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silentia Calculator</title>
+    <link rel="stylesheet" href="calculator-style.css">
+</head>
+<body>
+    <div class="calculator-container">
+        <h1>Silentia screen vs hospital curtain</h1>
+        <hr>
+
+        <!-- Curtain Type Selection -->
+        <section class="section">
+            <h2>Curtain type</h2>
+            <div class="toggle-group">
+                <button class="toggle-btn active" data-type="textile">Textile</button>
+                <button class="toggle-btn" data-type="disposable">Disposable</button>
+            </div>
+        </section>
+
+        <!-- Cleaning Frequency Selection -->
+        <section class="section">
+            <h2>Cleaning</h2>
+            <div class="toggle-group">
+                <button class="toggle-btn active" data-frequency="quarterly">Quarterly</button>
+                <button class="toggle-btn" data-frequency="monthly">Monthly</button>
+                <button class="toggle-btn" data-frequency="weekly">Weekly</button>
+            </div>
+        </section>
+
+        <!-- Quantity Input -->
+        <section class="section">
+            <h2>No. Curtains vs Silentia screen</h2>
+            <input type="number" id="quantity" placeholder="Enter number" min="0">
+        </section>
+
+        <!-- Calculate Button -->
+        <button class="calculate-btn">CALCULATE</button>
+
+        <!-- ROI Display -->
+        <section class="section">
+            <div class="roi-display">
+                <div class="calendar-container">
+                    <svg class="calendar-icon" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Calendar Body -->
+                        <rect x="25" y="50" width="150" height="155" rx="20" ry="20"
+                              fill="none" stroke="#000" stroke-width="3"/>
+
+                        <!-- Spiral Binding -->
+                        <rect x="55" y="30" width="5" height="30" fill="#000"/>
+                        <rect x="85" y="30" width="5" height="30" fill="#000"/>
+                        <rect x="115" y="30" width="5" height="30" fill="#000"/>
+                        <rect x="145" y="30" width="5" height="30" fill="#000"/>
+
+                        <!-- Header Line -->
+                        <line x1="25" y1="110" x2="175" y2="110" stroke="#000" stroke-width="3"/>
+
+                        <!-- ROI Text in Header -->
+                        <text x="100" y="90" font-family="Arial, sans-serif" font-size="28" font-weight="700"
+                              text-anchor="middle" fill="#000">ROI</text>
+                    </svg>
+
+                    <div class="roi-value-inside">
+                        <span id="roi-years">--</span>
+                        <span class="label">YEAR</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resources Display -->
+        <section class="section">
+            <h2>Resources</h2>
+            <div class="resources-display" id="resources-output">
+                <p>Enter quantity and click Calculate to see results</p>
+            </div>
+        </section>
+    </div>
+
+    <script src="calculator.js"></script>
+</body>
+</html>
