@@ -135,7 +135,7 @@ function calculateROI() {
     const breakEvenYears = initialDifference / annualSavings;
 
     return {
-        years: Math.max(0, breakEvenYears).toFixed(1),
+        years: Math.max(0, breakEvenYears), // Return raw number, not formatted
         valid: true,
         savings: annualSavings,
         initialDiff: initialDifference
@@ -170,7 +170,7 @@ function calculateResources() {
             curtainWater: curtainWater.toFixed(0),
             silentiaKWh: silentiaKWh.toFixed(0),
             silentiaWater: silentiaWater.toFixed(0),
-            silentiaDisinfectant: silentiaDisinfectant.toFixed(2),
+            silentiaDisinfectant: silentiaDisinfectant.toFixed(0),
             silentiaWipes: silentiaWipes.toFixed(0),
             savedKWh: (curtainKWh - silentiaKWh).toFixed(0),
             savedWater: (curtainWater - silentiaWater).toFixed(0)
@@ -183,10 +183,10 @@ function calculateResources() {
 
         return {
             type: 'disposable',
-            plasticWaste: plasticWaste.toFixed(1),
-            silentiaDisinfectant: silentiaDisinfectant.toFixed(2),
+            plasticWaste: plasticWaste.toFixed(0),
+            silentiaDisinfectant: silentiaDisinfectant.toFixed(0),
             silentiaWipes: silentiaWipes.toFixed(0),
-            savedPlastic: plasticWaste.toFixed(1) // Silentia produces no plastic waste
+            savedPlastic: plasticWaste.toFixed(0) // Silentia produces no plastic waste
         };
     }
 }
@@ -203,17 +203,47 @@ function displayResults() {
     const roiElement = document.getElementById('roi-years');
     const yearLabelElement = document.querySelector('.label');
 
-    if (roi.valid && roi.years !== '999.0') {
-        const years = parseFloat(roi.years);
+    if (roi.valid && roi.years !== 999) {
+        const years = roi.years;
         if (years > SILENTIA_LIFESPAN_YEARS) {
             roiElement.textContent = '10+';
             yearLabelElement.textContent = 'YEARS';
+        } else if (years < 1/12) {
+            // Convert to weeks when less than 1 month
+            const weeks = Math.round(years * 52);
+            // If 4 or more weeks, show as months instead
+            if (weeks >= 4) {
+                const months = Math.round(years * 12);
+                roiElement.textContent = months.toString();
+                yearLabelElement.textContent = months === 1 ? 'MONTH' : 'MONTHS';
+            } else {
+                roiElement.textContent = weeks.toString();
+                yearLabelElement.textContent = weeks === 1 ? 'WEEK' : 'WEEKS';
+            }
+        } else if (years < 1) {
+            // Convert to months when less than 1 year
+            const months = Math.round(years * 12);
+            // If it rounds to 12 months, show as 1 year instead
+            if (months >= 12) {
+                roiElement.textContent = '1';
+                yearLabelElement.textContent = 'YEAR';
+            } else {
+                roiElement.textContent = months.toString();
+                yearLabelElement.textContent = months === 1 ? 'MONTH' : 'MONTHS';
+            }
         } else {
-            roiElement.textContent = roi.years;
+            // Display years - remove decimal if whole number
+            const roundedYears = Math.round(years * 10) / 10; // Round to 1 decimal place
+            if (Math.abs(roundedYears - Math.round(roundedYears)) < 0.01) {
+                // It's essentially a whole number
+                roiElement.textContent = Math.round(roundedYears).toString();
+            } else {
+                roiElement.textContent = roundedYears.toFixed(1);
+            }
             // Update label: "YEAR" if 1 or less, "YEARS" if more than 1
-            yearLabelElement.textContent = years > 1 ? 'YEARS' : 'YEAR';
+            yearLabelElement.textContent = roundedYears > 1 ? 'YEARS' : 'YEAR';
         }
-    } else if (roi.years === '999.0') {
+    } else if (roi.years === 999) {
         roiElement.textContent = 'N/A';
         yearLabelElement.textContent = 'YEARS';
     } else {
@@ -238,8 +268,6 @@ function displayResults() {
             </div>
             <div>
                 <strong>Silentia Screens (Annual):</strong>
-                <p>0 kWh</p>
-                <p>0 liters water</p>
                 <p>${resources.silentiaDisinfectant} liters disinfectant</p>
                 <p>${resources.silentiaWipes} cleaning wipes</p>
             </div>
@@ -257,7 +285,6 @@ function displayResults() {
             </div>
             <div>
                 <strong>Silentia Screens (Annual):</strong>
-                <p>0 kg plastic waste</p>
                 <p>${resources.silentiaDisinfectant} liters disinfectant</p>
                 <p>${resources.silentiaWipes} cleaning wipes</p>
             </div>
