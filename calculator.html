@@ -44,9 +44,28 @@
             <div class="roi-display">
                 <div class="calendar-container">
                     <svg class="calendar-icon" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Calendar Body -->
+                        <!-- Drop Shadow Filter -->
+                        <defs>
+                            <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.2"/>
+                            </filter>
+                        </defs>
+
+                        <!-- Calendar Body with rounded corners -->
                         <rect x="25" y="50" width="150" height="155" rx="20" ry="20"
-                              fill="none" stroke="#000" stroke-width="3"/>
+                              fill="#FFFFFF" stroke="none" filter="url(#shadow)"/>
+
+                        <!-- Red Header Background -->
+                        <rect x="25" y="50" width="150" height="60" rx="20" ry="20"
+                              fill="#AC2220" stroke="none"/>
+                        <!-- Cover bottom corners of red header to make them square -->
+                        <rect x="25" y="90" width="150" height="20" fill="#AC2220" stroke="none"/>
+
+                        <!-- White Body Background -->
+                        <rect x="25" y="110" width="150" height="95" rx="20" ry="20"
+                              fill="#FFFFFF" stroke="none"/>
+                        <!-- Cover top corners of white body to make them square -->
+                        <rect x="25" y="110" width="150" height="20" fill="#FFFFFF" stroke="none"/>
 
                         <!-- Spiral Binding -->
                         <rect x="55" y="30" width="5" height="30" fill="#000"/>
@@ -54,12 +73,9 @@
                         <rect x="115" y="30" width="5" height="30" fill="#000"/>
                         <rect x="145" y="30" width="5" height="30" fill="#000"/>
 
-                        <!-- Header Line -->
-                        <line x1="25" y1="110" x2="175" y2="110" stroke="#000" stroke-width="3"/>
-
                         <!-- ROI Text in Header -->
                         <text x="100" y="90" font-family="Arial, sans-serif" font-size="28" font-weight="700"
-                              text-anchor="middle" fill="#000">ROI</text>
+                              text-anchor="middle" fill="#FFFFFF">ROI</text>
                     </svg>
 
                     <div class="roi-value-inside">
