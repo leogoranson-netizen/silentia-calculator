@@ -192,6 +192,91 @@ function calculateResources() {
 }
 
 // ============================================
+// CHART DISPLAY FUNCTION
+// ============================================
+
+function displayChart() {
+    const qty = state.quantity;
+    const chartElement = document.getElementById('chart-output');
+
+    if (qty <= 0) {
+        chartElement.innerHTML = '<p>Enter quantity and click Calculate to see chart</p>';
+        return;
+    }
+
+    const cleaningsPerYear = FREQUENCY_MULTIPLIER[state.cleaningFrequency];
+    const curtainTypeName = state.curtainType === 'textile' ? 'Textile' : 'Disposable';
+
+    // Calculate costs
+    const silentiaInitial = qty * COSTS.silentiaScreen;
+    const curtainInitial = qty * (state.curtainType === 'textile' ? COSTS.textileCurtain : COSTS.disposableCurtain);
+
+    const silentiaAnnual = qty * COSTS.silentiaCleaning * cleaningsPerYear;
+    let curtainAnnual;
+    if (state.curtainType === 'textile') {
+        curtainAnnual = qty * COSTS.textileCleaning * cleaningsPerYear;
+    } else {
+        curtainAnnual = qty * COSTS.disposableReplacement * cleaningsPerYear;
+    }
+
+    // 10-year total cost
+    const silentiaTotal = silentiaInitial + (silentiaAnnual * SILENTIA_LIFESPAN_YEARS);
+    const curtainTotal = curtainInitial + (curtainAnnual * SILENTIA_LIFESPAN_YEARS);
+
+    // Format currency
+    const formatCurrency = (value) => '€' + value.toLocaleString('en-US');
+
+    // Create chart bars
+    const createBarRow = (label, silentiaValue, curtainValue) => {
+        const maxValue = Math.max(silentiaValue, curtainValue);
+        const silentiaWidth = maxValue > 0 ? (silentiaValue / maxValue) * 100 : 0;
+        const curtainWidth = maxValue > 0 ? (curtainValue / maxValue) * 100 : 0;
+
+        return `
+            <div class="chart-bar-row">
+                <span class="chart-bar-label">Silentia</span>
+                <div class="chart-bar-wrapper">
+                    <div class="chart-bar silentia" style="width: ${silentiaWidth}%"></div>
+                </div>
+                <span class="chart-bar-value">${formatCurrency(silentiaValue)}</span>
+            </div>
+            <div class="chart-bar-row">
+                <span class="chart-bar-label">${curtainTypeName}</span>
+                <div class="chart-bar-wrapper">
+                    <div class="chart-bar curtain" style="width: ${curtainWidth}%"></div>
+                </div>
+                <span class="chart-bar-value">${formatCurrency(curtainValue)}</span>
+            </div>
+        `;
+    };
+
+    chartElement.innerHTML = `
+        <div class="chart-section">
+            <div class="chart-section-title">Initial Investment</div>
+            ${createBarRow('Initial', silentiaInitial, curtainInitial)}
+        </div>
+        <div class="chart-section">
+            <div class="chart-section-title">Annual Operating Cost</div>
+            ${createBarRow('Annual', silentiaAnnual, curtainAnnual)}
+        </div>
+        <div class="chart-section">
+            <div class="chart-section-title">10-Year Total Cost</div>
+            ${createBarRow('Total', silentiaTotal, curtainTotal)}
+        </div>
+        <div class="chart-legend">
+            <div class="chart-legend-item">
+                <div class="chart-legend-color silentia"></div>
+                <span>Silentia</span>
+            </div>
+            <div class="chart-legend-item">
+                <div class="chart-legend-color curtain"></div>
+                <span>${curtainTypeName} Curtain</span>
+            </div>
+        </div>
+    `;
+}
+
+// ============================================
 // DISPLAY UPDATE FUNCTIONS
 // ============================================
 
@@ -261,36 +346,35 @@ function displayResults() {
 
     if (resources.type === 'textile') {
         resourcesElement.innerHTML = `
-            <div>
-                <strong>Textile Curtains (Annual):</strong>
-                <p>${resources.curtainKWh} kWh</p>
-                <p>${resources.curtainWater} liters water</p>
+            <div class="resource-bubble curtain-bubble">
+                <div class="resource-bubble-header">Textile Curtains (Annual)</div>
+                <div class="resource-bubble-body">
+                    <p>${resources.curtainKWh} kWh</p>
+                    <p>${resources.curtainWater} liters water</p>
+                </div>
             </div>
-            <div>
-                <strong>Silentia Screens (Annual):</strong>
-                <p>${resources.silentiaDisinfectant} liters disinfectant</p>
-                <p>${resources.silentiaWipes} cleaning wipes</p>
-            </div>
-            <div style="border-top: 2px solid #ddd; padding-top: 10px; margin-top: 15px;">
-                <strong style="color: #00864a;">Annual Savings:</strong>
-                <p style="color: #00864a; font-weight: bold;">${resources.savedKWh} kWh</p>
-                <p style="color: #00864a; font-weight: bold;">${resources.savedWater} liters water</p>
+            <div class="resource-bubble silentia-bubble">
+                <div class="resource-bubble-header">Silentia Screens (Annual)</div>
+                <div class="resource-bubble-body">
+                    <p>${resources.silentiaDisinfectant} liters disinfectant</p>
+                    <p>${resources.silentiaWipes} cleaning wipes</p>
+                </div>
             </div>
         `;
     } else {
         resourcesElement.innerHTML = `
-            <div>
-                <strong>Disposable Curtains (Annual):</strong>
-                <p>${resources.plasticWaste} kg plastic waste</p>
+            <div class="resource-bubble curtain-bubble">
+                <div class="resource-bubble-header">Disposable Curtains (Annual)</div>
+                <div class="resource-bubble-body">
+                    <p>${resources.plasticWaste} kg plastic waste</p>
+                </div>
             </div>
-            <div>
-                <strong>Silentia Screens (Annual):</strong>
-                <p>${resources.silentiaDisinfectant} liters disinfectant</p>
-                <p>${resources.silentiaWipes} cleaning wipes</p>
-            </div>
-            <div style="border-top: 2px solid #ddd; padding-top: 10px; margin-top: 15px;">
-                <strong style="color: #00864a;">Annual Savings:</strong>
-                <p style="color: #00864a; font-weight: bold;">${resources.savedPlastic} kg plastic waste eliminated</p>
+            <div class="resource-bubble silentia-bubble">
+                <div class="resource-bubble-header">Silentia Screens (Annual)</div>
+                <div class="resource-bubble-body">
+                    <p>${resources.silentiaDisinfectant} liters disinfectant</p>
+                    <p>${resources.silentiaWipes} cleaning wipes</p>
+                </div>
             </div>
         `;
     }
@@ -307,6 +391,7 @@ function handleCalculate() {
     }
 
     displayResults();
+    displayChart();
 }
 
 // ============================================
@@ -319,6 +404,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add calculate button listener
     document.querySelector('.calculate-btn').addEventListener('click', handleCalculate);
+
+    // Info popup handlers
+    document.querySelectorAll('.info-icon').forEach(icon => {
+        icon.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const popupId = this.dataset.popup;
+            const popup = document.getElementById(popupId);
+            // Close all other popups
+            document.querySelectorAll('.info-popup').forEach(p => {
+                if (p !== popup) p.classList.remove('active');
+            });
+            popup.classList.toggle('active');
+        });
+    });
+
+    // Close popups when clicking outside
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.info-popup').forEach(p => p.classList.remove('active'));
+    });
 
     // Optional: Calculate on Enter key in quantity input
     document.getElementById('quantity').addEventListener('keypress', function(e) {
