@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="calculator-container">
-        <h1>Silentia screen vs hospital curtain</h1>
+        <h1>Hospital curtains vs Silentia screens</h1>
         <hr>
 
         <!-- Curtain Type Selection -->
@@ -32,16 +32,25 @@
 
         <!-- Quantity Input -->
         <section class="section">
-            <h2>No. Curtains vs Silentia screens</h2>
+            <h2>Quantity of curtains</h2>
             <input type="number" id="quantity" placeholder="Enter number" min="0">
         </section>
 
         <!-- Calculate Button -->
         <button class="calculate-btn">CALCULATE</button>
 
+        <hr>
+
         <!-- ROI Display -->
         <section class="section">
             <div class="roi-display">
+                <span class="roi-label">Return on investment <span class="info-icon" data-popup="roi-popup">&#9432;</span>
+                    <div class="info-popup" id="roi-popup">
+                        <p>ROI shows how quickly Silentia screens pay for themselves compared to curtains.</p>
+                        <p>It calculates the break-even point where the higher initial cost of Silentia is offset by lower ongoing cleaning/replacement costs.</p>
+                        <p><strong>Formula:</strong> (Silentia cost - Curtain cost) &divide; (Annual curtain cost - Annual Silentia cost)</p>
+                    </div>
+                </span>
                 <div class="calendar-container">
                     <svg class="calendar-icon" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
                         <!-- Drop Shadow Filter -->
@@ -87,10 +96,17 @@
         </section>
 
         <!-- Resources Display -->
-        <section class="section">
-            <h2>Resources</h2>
+        <section class="section" style="margin-top: -20px;">
+            <h2 style="position: relative;">Resources <span class="info-icon" data-popup="resources-popup">&#9432;</span>
+                <div class="info-popup" id="resources-popup">
+                    <p>Shows the annual resource consumption for each option based on your selected quantity and cleaning frequency.</p>
+                    <p><strong>Textile curtains:</strong> Energy (kWh) and water used per wash cycle.</p>
+                    <p><strong>Disposable curtains:</strong> Plastic waste generated per replacement.</p>
+                    <p><strong>Silentia screens:</strong> Only disinfectant and cleaning wipes needed.</p>
+                </div>
+            </h2>
             <div class="resources-display" id="resources-output">
-                <p>Enter quantity and click Calculate to see results</p>
+                <p style="font-weight: 300;">Enter quantity and click Calculate to see results</p>
             </div>
         </section>
     </div>
