@@ -41,7 +41,7 @@ const ENVIRONMENTAL = {
         kWhPerCleaning: 0, // No energy used for Silentia cleaning
         waterPerCleaning: 0, // No water used for Silentia cleaning
         disinfectantPerCleaning: 0.02, // 0.02 liters disinfectant per screen
-        wipesPerCleaning: 1 // 1 cleaning wipe per screen
+        wipesPerCleaning: 0.015 // 1 cleaning wipe per screen = 0.015 kg
     }
 };
 
@@ -50,7 +50,8 @@ const FREQUENCY_MULTIPLIER = {
     yearly: 1,
     quarterly: 4,
     monthly: 12,
-    weekly: 52
+    weekly: 52,
+    daily: 365
 };
 
 // ============================================
@@ -170,8 +171,8 @@ function calculateResources() {
             curtainWater: curtainWater.toFixed(0),
             silentiaKWh: silentiaKWh.toFixed(0),
             silentiaWater: silentiaWater.toFixed(0),
-            silentiaDisinfectant: silentiaDisinfectant.toFixed(0),
-            silentiaWipes: silentiaWipes.toFixed(0),
+            silentiaDisinfectant: parseFloat(silentiaDisinfectant.toFixed(2)),
+            silentiaWipes: parseFloat(silentiaWipes.toFixed(2)),
             savedKWh: (curtainKWh - silentiaKWh).toFixed(0),
             savedWater: (curtainWater - silentiaWater).toFixed(0)
         };
@@ -184,8 +185,8 @@ function calculateResources() {
         return {
             type: 'disposable',
             plasticWaste: plasticWaste.toFixed(0),
-            silentiaDisinfectant: silentiaDisinfectant.toFixed(0),
-            silentiaWipes: silentiaWipes.toFixed(0),
+            silentiaDisinfectant: parseFloat(silentiaDisinfectant.toFixed(2)),
+            silentiaWipes: parseFloat(silentiaWipes.toFixed(2)),
             savedPlastic: plasticWaste.toFixed(0) // Silentia produces no plastic waste
         };
     }
@@ -293,6 +294,11 @@ function displayResults() {
         if (years > SILENTIA_LIFESPAN_YEARS) {
             roiElement.textContent = '10+';
             yearLabelElement.textContent = 'YEARS';
+        } else if (years < 1/52) {
+            // Convert to days when less than 1 week
+            const days = Math.round(years * 365);
+            roiElement.textContent = Math.max(1, days).toString();
+            yearLabelElement.textContent = days === 1 ? 'DAY' : 'DAYS';
         } else if (years < 1/12) {
             // Convert to weeks when less than 1 month
             const weeks = Math.round(years * 52);
@@ -301,6 +307,10 @@ function displayResults() {
                 const months = Math.round(years * 12);
                 roiElement.textContent = months.toString();
                 yearLabelElement.textContent = months === 1 ? 'MONTH' : 'MONTHS';
+            } else if (weeks < 1) {
+                const days = Math.round(years * 365);
+                roiElement.textContent = Math.max(1, days).toString();
+                yearLabelElement.textContent = days === 1 ? 'DAY' : 'DAYS';
             } else {
                 roiElement.textContent = weeks.toString();
                 yearLabelElement.textContent = weeks === 1 ? 'WEEK' : 'WEEKS';
@@ -344,40 +354,101 @@ function displayResults() {
         return;
     }
 
+    const curtainTypeName = state.curtainType === 'textile' ? 'Textile' : 'Disposable';
+
+    let chartHTML = '';
+
     if (resources.type === 'textile') {
-        resourcesElement.innerHTML = `
-            <div class="resource-bubble curtain-bubble">
-                <div class="resource-bubble-header">Textile Curtains (Annual)</div>
-                <div class="resource-bubble-body">
-                    <p>${resources.curtainKWh} kWh</p>
-                    <p>${resources.curtainWater} liters water</p>
+        const curtainTotal = Number(resources.curtainKWh) + Number(resources.curtainWater);
+        const silentiaTotal = Number(resources.silentiaDisinfectant) + Number(resources.silentiaWipes);
+        const maxTotal = Math.max(curtainTotal, silentiaTotal);
+
+        // Bar widths scaled relative to each other
+        const curtainBarWidth = maxTotal > 0 ? (curtainTotal / maxTotal) * 100 : 0;
+        const silentiaBarWidth = maxTotal > 0 ? (silentiaTotal / maxTotal) * 100 : 0;
+
+        // Segment percentages within each bar
+        const curtainEnergyPct = curtainTotal > 0 ? (Number(resources.curtainKWh) / curtainTotal) * 100 : 0;
+        const curtainWaterPct = curtainTotal > 0 ? (Number(resources.curtainWater) / curtainTotal) * 100 : 0;
+        const silentiaDisinfPct = silentiaTotal > 0 ? (Number(resources.silentiaDisinfectant) / silentiaTotal) * 100 : 0;
+        const silentiaWipesPct = silentiaTotal > 0 ? (Number(resources.silentiaWipes) / silentiaTotal) * 100 : 0;
+
+        chartHTML = `
+            <div class="stacked-bar-section">
+                <div class="stacked-bar-row">
+                    <span class="stacked-bar-label">${curtainTypeName}</span>
+                    <div class="stacked-bar-track">
+                        <div class="stacked-bar-wrapper" style="width: ${curtainBarWidth}%">
+                            <div class="stacked-segment seg-energy" style="width: ${curtainEnergyPct}%"></div>
+                            <div class="stacked-segment seg-water" style="width: ${curtainWaterPct}%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stacked-bar-details">
+                    <span class="seg-detail"><span class="seg-dot seg-energy"></span>${resources.curtainKWh} kWh</span>
+                    <span class="seg-detail"><span class="seg-dot seg-water"></span>${resources.curtainWater} L waste water</span>
                 </div>
             </div>
-            <div class="resource-bubble silentia-bubble">
-                <div class="resource-bubble-header">Silentia Screens (Annual)</div>
-                <div class="resource-bubble-body">
-                    <p>${resources.silentiaDisinfectant} liters disinfectant</p>
-                    <p>${resources.silentiaWipes} cleaning wipes</p>
+            <div class="stacked-bar-section">
+                <div class="stacked-bar-row">
+                    <span class="stacked-bar-label">Silentia</span>
+                    <div class="stacked-bar-track">
+                        <div class="stacked-bar-wrapper" style="width: ${silentiaBarWidth}%">
+                            <div class="stacked-segment seg-wipes" style="width: ${silentiaWipesPct}%"></div>
+                            <div class="stacked-segment seg-disinfectant" style="width: ${silentiaDisinfPct}%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stacked-bar-details">
+                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${resources.silentiaWipes} kg wipes</span>
+                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${resources.silentiaDisinfectant} L disinfectant</span>
                 </div>
             </div>
         `;
     } else {
-        resourcesElement.innerHTML = `
-            <div class="resource-bubble curtain-bubble">
-                <div class="resource-bubble-header">Disposable Curtains (Annual)</div>
-                <div class="resource-bubble-body">
-                    <p>${resources.plasticWaste} kg plastic waste</p>
+        const curtainTotal = Number(resources.plasticWaste);
+        const silentiaTotal = Number(resources.silentiaDisinfectant) + Number(resources.silentiaWipes);
+        const maxTotal = Math.max(curtainTotal, silentiaTotal);
+
+        const curtainBarWidth = maxTotal > 0 ? (curtainTotal / maxTotal) * 100 : 0;
+        const silentiaBarWidth = maxTotal > 0 ? (silentiaTotal / maxTotal) * 100 : 0;
+
+        const silentiaDisinfPct = silentiaTotal > 0 ? (Number(resources.silentiaDisinfectant) / silentiaTotal) * 100 : 0;
+        const silentiaWipesPct = silentiaTotal > 0 ? (Number(resources.silentiaWipes) / silentiaTotal) * 100 : 0;
+
+        chartHTML = `
+            <div class="stacked-bar-section">
+                <div class="stacked-bar-row">
+                    <span class="stacked-bar-label">${curtainTypeName}</span>
+                    <div class="stacked-bar-track">
+                        <div class="stacked-bar-wrapper" style="width: ${curtainBarWidth}%">
+                            <div class="stacked-segment seg-plastic" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stacked-bar-details">
+                    <span class="seg-detail"><span class="seg-dot seg-plastic"></span>${resources.plasticWaste} kg plastic</span>
                 </div>
             </div>
-            <div class="resource-bubble silentia-bubble">
-                <div class="resource-bubble-header">Silentia Screens (Annual)</div>
-                <div class="resource-bubble-body">
-                    <p>${resources.silentiaDisinfectant} liters disinfectant</p>
-                    <p>${resources.silentiaWipes} cleaning wipes</p>
+            <div class="stacked-bar-section">
+                <div class="stacked-bar-row">
+                    <span class="stacked-bar-label">Silentia</span>
+                    <div class="stacked-bar-track">
+                        <div class="stacked-bar-wrapper" style="width: ${silentiaBarWidth}%">
+                            <div class="stacked-segment seg-wipes" style="width: ${silentiaWipesPct}%"></div>
+                            <div class="stacked-segment seg-disinfectant" style="width: ${silentiaDisinfPct}%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stacked-bar-details">
+                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${resources.silentiaWipes} kg wipes</span>
+                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${resources.silentiaDisinfectant} L disinfectant</span>
                 </div>
             </div>
         `;
     }
+
+    resourcesElement.innerHTML = chartHTML;
 }
 
 // ============================================
