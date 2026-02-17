@@ -27,12 +27,18 @@
                 <button class="toggle-btn active" data-frequency="quarterly">Quarterly</button>
                 <button class="toggle-btn" data-frequency="monthly">Monthly</button>
                 <button class="toggle-btn" data-frequency="weekly">Weekly</button>
+                <button class="toggle-btn" data-frequency="daily">Daily</button>
             </div>
         </section>
 
         <!-- Quantity Input -->
         <section class="section">
-            <h2>Quantity of curtains</h2>
+            <h2 style="position: relative;">Quantity of curtains <span class="info-icon" data-popup="quantity-popup">&#9432;</span>
+                <div class="info-popup" id="quantity-popup">
+                    <p>Enter the number of curtains or screens in your facility.</p>
+                    <p>This is used to calculate the total cost and environmental impact for both options.</p>
+                </div>
+            </h2>
             <input type="number" id="quantity" placeholder="Enter number" min="0">
         </section>
 
