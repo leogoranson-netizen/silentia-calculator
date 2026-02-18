@@ -36,7 +36,7 @@ h1 {
 hr {
     border: none;
     border-top: 1px solid #ddd;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .section {
@@ -86,7 +86,7 @@ h2 {
 
 /* Input Field */
 input[type="number"] {
-    width: 55%;
+    width: 38%;
     padding: 9px 15px;
     border: 2px solid #ddd;
     border-radius: 25px;
@@ -199,9 +199,9 @@ input[type="number"]:focus {
 
 .calendar-container {
     position: relative;
-    width: 65px;
-    height: 72px;
-    margin-left: 40px;
+    width: 85px;
+    height: 94px;
+    margin-left: 30px;
     margin-top: -16px;
     display: flex;
     align-items: center;
@@ -227,7 +227,7 @@ input[type="number"]:focus {
 
 #roi-years {
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    font-size: 0.65em;
+    font-size: 0.925em;
     font-weight: 700;
     color: #000;
     line-height: 1;
@@ -235,7 +235,7 @@ input[type="number"]:focus {
 
 .label {
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    font-size: 0.65em;
+    font-size: 0.85em;
     color: #000;
     font-weight: 700;
     text-transform: uppercase;
@@ -245,6 +245,10 @@ input[type="number"]:focus {
 /* Resources Display — Stacked Bars */
 .resources-display {
     display: block;
+}
+
+.stacked-bar-section:first-child {
+    margin-top: 10px;
 }
 
 .stacked-bar-section {
@@ -261,19 +265,20 @@ input[type="number"]:focus {
 }
 
 .stacked-bar-label {
-    width: 80px;
+    width: auto;
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    font-size: 0.85em;
+    font-size: 0.925em;
     font-weight: 700;
     color: #000;
     flex-shrink: 0;
+    margin-right: auto;
 }
 
 .stacked-bar-track {
     flex: 1;
-    height: 28px;
+    height: 18px;
     background: #eee;
-    border-radius: 14px;
+    border-radius: 9px;
     overflow: hidden;
 }
 
@@ -312,16 +317,17 @@ input[type="number"]:focus {
 .stacked-bar-details {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
     gap: 10px;
-    margin-top: 5px;
-    padding-left: 80px;
+    margin-bottom: 5px;
 }
 
 .seg-detail {
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    font-size: 0.75em;
-    font-weight: 300;
-    color: #333;
+    font-size: 0.925em;
+    font-weight: 700;
+    color: #000;
     display: flex;
     align-items: center;
     gap: 4px;
