@@ -375,8 +375,12 @@ function displayResults() {
 
         chartHTML = `
             <div class="stacked-bar-section">
+                <div class="stacked-bar-details">
+                    <span class="stacked-bar-label">${curtainTypeName}:</span>
+                    <span class="seg-detail"><span class="seg-dot seg-energy"></span>${resources.curtainKWh} kWh</span>
+                    <span class="seg-detail"><span class="seg-dot seg-water"></span>${resources.curtainWater} L waste water</span>
+                </div>
                 <div class="stacked-bar-row">
-                    <span class="stacked-bar-label">${curtainTypeName}</span>
                     <div class="stacked-bar-track">
                         <div class="stacked-bar-wrapper" style="width: ${curtainBarWidth}%">
                             <div class="stacked-segment seg-energy" style="width: ${curtainEnergyPct}%"></div>
@@ -384,24 +388,20 @@ function displayResults() {
                         </div>
                     </div>
                 </div>
-                <div class="stacked-bar-details">
-                    <span class="seg-detail"><span class="seg-dot seg-energy"></span>${resources.curtainKWh} kWh</span>
-                    <span class="seg-detail"><span class="seg-dot seg-water"></span>${resources.curtainWater} L waste water</span>
-                </div>
             </div>
             <div class="stacked-bar-section">
+                <div class="stacked-bar-details">
+                    <span class="stacked-bar-label">Silentia:</span>
+                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${resources.silentiaWipes} kg wipes</span>
+                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${resources.silentiaDisinfectant} L disinfectant</span>
+                </div>
                 <div class="stacked-bar-row">
-                    <span class="stacked-bar-label">Silentia</span>
                     <div class="stacked-bar-track">
                         <div class="stacked-bar-wrapper" style="width: ${silentiaBarWidth}%">
                             <div class="stacked-segment seg-wipes" style="width: ${silentiaWipesPct}%"></div>
                             <div class="stacked-segment seg-disinfectant" style="width: ${silentiaDisinfPct}%"></div>
                         </div>
                     </div>
-                </div>
-                <div class="stacked-bar-details">
-                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${resources.silentiaWipes} kg wipes</span>
-                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${resources.silentiaDisinfectant} L disinfectant</span>
                 </div>
             </div>
         `;
@@ -418,31 +418,31 @@ function displayResults() {
 
         chartHTML = `
             <div class="stacked-bar-section">
+                <div class="stacked-bar-details">
+                    <span class="stacked-bar-label">${curtainTypeName}:</span>
+                    <span class="seg-detail"><span class="seg-dot seg-plastic"></span>${resources.plasticWaste} kg plastic</span>
+                </div>
                 <div class="stacked-bar-row">
-                    <span class="stacked-bar-label">${curtainTypeName}</span>
                     <div class="stacked-bar-track">
                         <div class="stacked-bar-wrapper" style="width: ${curtainBarWidth}%">
                             <div class="stacked-segment seg-plastic" style="width: 100%"></div>
                         </div>
                     </div>
                 </div>
-                <div class="stacked-bar-details">
-                    <span class="seg-detail"><span class="seg-dot seg-plastic"></span>${resources.plasticWaste} kg plastic</span>
-                </div>
             </div>
             <div class="stacked-bar-section">
+                <div class="stacked-bar-details">
+                    <span class="stacked-bar-label">Silentia:</span>
+                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${resources.silentiaWipes} kg wipes</span>
+                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${resources.silentiaDisinfectant} L disinfectant</span>
+                </div>
                 <div class="stacked-bar-row">
-                    <span class="stacked-bar-label">Silentia</span>
                     <div class="stacked-bar-track">
                         <div class="stacked-bar-wrapper" style="width: ${silentiaBarWidth}%">
                             <div class="stacked-segment seg-wipes" style="width: ${silentiaWipesPct}%"></div>
                             <div class="stacked-segment seg-disinfectant" style="width: ${silentiaDisinfPct}%"></div>
                         </div>
                     </div>
-                </div>
-                <div class="stacked-bar-details">
-                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${resources.silentiaWipes} kg wipes</span>
-                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${resources.silentiaDisinfectant} L disinfectant</span>
                 </div>
             </div>
         `;
