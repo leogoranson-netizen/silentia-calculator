@@ -69,6 +69,7 @@ function initializeToggles() {
             this.classList.add('active');
             // Update state
             state.curtainType = this.dataset.type;
+            update();
         });
     });
 
@@ -82,12 +83,14 @@ function initializeToggles() {
             this.classList.add('active');
             // Update state
             state.cleaningFrequency = this.dataset.frequency;
+            update();
         });
     });
 
     // Quantity input
     document.getElementById('quantity').addEventListener('input', function() {
         state.quantity = parseInt(this.value) || 0;
+        update();
     });
 }
 
@@ -452,17 +455,14 @@ function displayResults() {
 }
 
 // ============================================
-// CALCULATE BUTTON HANDLER
+// LIVE UPDATE
 // ============================================
 
-function handleCalculate() {
-    if (state.quantity <= 0) {
-        alert('Please enter a valid number of curtains/screens');
-        return;
+function update() {
+    if (state.quantity > 0) {
+        displayResults();
+        displayChart();
     }
-
-    displayResults();
-    displayChart();
 }
 
 // ============================================
@@ -472,9 +472,6 @@ function handleCalculate() {
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     initializeToggles();
-
-    // Add calculate button listener
-    document.querySelector('.calculate-btn').addEventListener('click', handleCalculate);
 
     // Info popup handlers
     document.querySelectorAll('.info-icon').forEach(icon => {
@@ -495,10 +492,4 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.info-popup').forEach(p => p.classList.remove('active'));
     });
 
-    // Optional: Calculate on Enter key in quantity input
-    document.getElementById('quantity').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            handleCalculate();
-        }
-    });
 });
