@@ -9,6 +9,7 @@ body {
     font-weight: 300;
     background: #f5f5f5;
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -54,6 +55,7 @@ h2 {
 /* Toggle Buttons */
 .toggle-group {
     display: inline-flex;
+    flex-wrap: wrap;
     background: white;
     border-radius: 50px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
@@ -456,5 +458,99 @@ input[type="number"]:focus {
 
 .chart-legend-color.curtain {
     background: #AC2220;
+}
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+    body {
+        padding: 12px;
+        align-items: flex-start;
+    }
+
+    .calculator-container {
+        padding: 24px 16px 0;
+        border-radius: 16px;
+    }
+
+    h1 {
+        font-size: 1.15em;
+    }
+
+    h2 {
+        font-size: 1em;
+    }
+
+    .section {
+        margin-bottom: 24px;
+    }
+
+    /* Larger tap targets */
+    .toggle-btn {
+        padding: 10px 14px;
+        font-size: 0.72em;
+    }
+
+    /* Let cleaning-frequency group use a 2×2 grid on very narrow screens */
+    .toggle-group {
+        border-radius: 16px;
+    }
+
+    .toggle-btn {
+        border-radius: 16px;
+    }
+
+    input[type="number"] {
+        width: 50%;
+        padding: 12px 16px;
+        font-size: 1em;
+    }
+
+    .calculate-btn {
+        max-width: none;
+        width: 100%;
+        padding: 14px 25px;
+        font-size: 0.85em;
+    }
+
+    /* Info popups: stay inside viewport */
+    .info-popup {
+        width: 240px;
+        left: auto;
+        right: 0;
+    }
+
+    /* ROI section */
+    .roi-label {
+        font-size: 1em;
+    }
+
+    .calendar-container {
+        margin-left: 20px;
+    }
+
+    /* Resource bar details: stack if tight */
+    .stacked-bar-details {
+        gap: 6px;
+    }
+
+    .seg-detail {
+        font-size: 0.82em;
+    }
+
+    .stacked-bar-label {
+        font-size: 0.85em;
+    }
+
+    /* Chart section */
+    .chart-bar-label {
+        width: 65px;
+        font-size: 0.8em;
+    }
+
+    .chart-bar-value {
+        width: 60px;
+        font-size: 0.8em;
+        margin-left: 6px;
+    }
 }
 
