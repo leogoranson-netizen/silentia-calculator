@@ -12,7 +12,7 @@ html {
 }
 
 body {
-    font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 16px;
     font-weight: 300;
     -webkit-font-smoothing: antialiased;
@@ -35,7 +35,7 @@ body {
 }
 
 h1 {
-    font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 21px;
     font-weight: 700;
     text-align: center;
@@ -54,7 +54,7 @@ hr {
 }
 
 h2 {
-    font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 15px;
@@ -76,7 +76,7 @@ h2 {
     border: none;
     background: transparent;
     border-radius: 50px;
-    font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 11px;
     font-weight: 400;
     letter-spacing: 0.5px;
@@ -103,7 +103,7 @@ input[type="number"] {
     padding: 9px 15px;
     border: 2px solid #ddd;
     border-radius: 25px;
-    font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 13px;
     font-weight: 300;
     outline: none;
@@ -186,7 +186,7 @@ input[type="number"]:focus {
 }
 
 .roi-label {
-    font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 18px;
     font-weight: 700;
     color: #000;
@@ -223,7 +223,7 @@ input[type="number"]:focus {
 }
 
 #roi-years {
-    font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 15px;
     font-weight: 700;
     color: #000;
@@ -231,7 +231,7 @@ input[type="number"]:focus {
 }
 
 .label {
-    font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 14px;
     color: #000;
     font-weight: 700;
@@ -263,7 +263,7 @@ input[type="number"]:focus {
 
 .stacked-bar-label {
     width: auto;
-    font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 15px;
     font-weight: 700;
     color: #000;
@@ -340,7 +340,7 @@ input[type="number"]:focus {
 }
 
 .seg-detail {
-    font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 15px;
     font-weight: 300;
     color: #000;
@@ -388,7 +388,7 @@ input[type="number"]:focus {
 }
 
 .chart-section-title {
-    font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-weight: 700;
     font-size: 14px;
     color: #000;
