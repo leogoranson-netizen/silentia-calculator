@@ -33,13 +33,13 @@
 
         <!-- Quantity Input -->
         <section class="section">
-            <h2 style="position: relative;">Quantity of curtains <span class="info-icon" data-popup="quantity-popup">&#9432;</span>
+            <h2 style="position: relative;">Quantity of curtains vs screens <span class="info-icon" data-popup="quantity-popup">&#9432;</span>
                 <div class="info-popup" id="quantity-popup">
                     <p>Enter the number of curtains or screens in your facility.</p>
                     <p>This is used to calculate the total cost and environmental impact for both options.</p>
                 </div>
             </h2>
-            <input type="number" id="quantity" placeholder="Enter number" min="0">
+            <input type="number" id="quantity" placeholder="Enter number" min="0" inputmode="numeric" pattern="[0-9]*">
         </section>
 
         <hr>
@@ -59,7 +59,14 @@
                         <!-- Drop Shadow Filter -->
                         <defs>
                             <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-                                <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.2"/>
+                                <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+                                <feOffset in="blur" dx="0" dy="4" result="offsetBlur"/>
+                                <feFlood flood-color="#000" flood-opacity="0.2" result="color"/>
+                                <feComposite in="color" in2="offsetBlur" operator="in" result="shadow"/>
+                                <feMerge>
+                                    <feMergeNode in="shadow"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
                             </filter>
                         </defs>
 
