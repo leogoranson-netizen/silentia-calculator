@@ -380,8 +380,8 @@ function displayResults() {
             <div class="stacked-bar-section">
                 <div class="stacked-bar-details">
                     <span class="stacked-bar-label">${curtainTypeName}:</span>
-                    <span class="seg-detail"><span class="seg-dot seg-energy"></span>${resources.curtainKWh} kWh</span>
-                    <span class="seg-detail"><span class="seg-dot seg-water"></span>${resources.curtainWater} L waste water</span>
+                    <span class="seg-detail"><span class="seg-dot seg-energy"></span>${resources.curtainKWh} <span class="unit-label">kWh</span></span>
+                    <span class="seg-detail"><span class="seg-dot seg-water"></span>${resources.curtainWater} <span class="unit-label">L waste water</span></span>
                 </div>
                 <div class="stacked-bar-row">
                     <div class="stacked-bar-track">
@@ -395,8 +395,8 @@ function displayResults() {
             <div class="stacked-bar-section">
                 <div class="stacked-bar-details">
                     <span class="stacked-bar-label">Silentia:</span>
-                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${resources.silentiaWipes} kg wipes</span>
-                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${resources.silentiaDisinfectant} L disinfectant</span>
+                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${resources.silentiaWipes} <span class="unit-label">kg wipes</span></span>
+                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${resources.silentiaDisinfectant} <span class="unit-label">L disinfectant</span></span>
                 </div>
                 <div class="stacked-bar-row">
                     <div class="stacked-bar-track">
@@ -423,7 +423,7 @@ function displayResults() {
             <div class="stacked-bar-section">
                 <div class="stacked-bar-details">
                     <span class="stacked-bar-label">${curtainTypeName}:</span>
-                    <span class="seg-detail"><span class="seg-dot seg-plastic"></span>${resources.plasticWaste} kg plastic</span>
+                    <span class="seg-detail"><span class="seg-dot seg-plastic"></span>${resources.plasticWaste} <span class="unit-label">kg plastic</span></span>
                 </div>
                 <div class="stacked-bar-row">
                     <div class="stacked-bar-track">
@@ -436,8 +436,8 @@ function displayResults() {
             <div class="stacked-bar-section">
                 <div class="stacked-bar-details">
                     <span class="stacked-bar-label">Silentia:</span>
-                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${resources.silentiaWipes} kg wipes</span>
-                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${resources.silentiaDisinfectant} L disinfectant</span>
+                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${resources.silentiaWipes} <span class="unit-label">kg wipes</span></span>
+                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${resources.silentiaDisinfectant} <span class="unit-label">L disinfectant</span></span>
                 </div>
                 <div class="stacked-bar-row">
                     <div class="stacked-bar-track">
