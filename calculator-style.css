@@ -5,7 +5,6 @@
 }
 
 html {
-    font-size: 16px;
     -webkit-text-size-adjust: 100%;
     -moz-text-size-adjust: 100%;
     text-size-adjust: 100%;
@@ -13,7 +12,6 @@ html {
 
 body {
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    font-size: 16px;
     font-weight: 300;
     -webkit-font-smoothing: antialiased;
     background: #f5f5f5;
@@ -29,14 +27,14 @@ body {
     background: white;
     border-radius: 20px;
     padding: 30px 20px 0px;
-    width: 380px;
-    max-width: 100%;
+    max-width: 380px;
+    width: 100%;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    font-size: 21px;
+    font-size: 1.3em;
     font-weight: 700;
     text-align: center;
     margin-bottom: 20px;
@@ -55,7 +53,7 @@ hr {
 
 h2 {
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    font-size: 18px;
+    font-size: 1.1em;
     font-weight: 700;
     margin-bottom: 15px;
     color: #000;
@@ -77,7 +75,7 @@ h2 {
     background: transparent;
     border-radius: 50px;
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    font-size: 11px;
+    font-size: 0.7em;
     font-weight: 400;
     letter-spacing: 0.5px;
     text-transform: uppercase;
@@ -104,7 +102,7 @@ input[type="number"] {
     border: 2px solid #ddd;
     border-radius: 25px;
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    font-size: 13px;
+    font-size: 0.82em;
     font-weight: 300;
     outline: none;
     -webkit-transition: border-color 0.2s;
@@ -128,10 +126,8 @@ input[type="number"]:focus {
 
 /* ROI Display */
 .roi-display {
-    display: -webkit-flex;
     display: flex;
     justify-content: flex-start;
-    -webkit-align-items: center;
     align-items: center;
     gap: 15px;
     padding: 10px 0;
@@ -151,7 +147,7 @@ input[type="number"]:focus {
     z-index: 10;
     width: 280px;
     font-weight: 300;
-    font-size: 13px;
+    font-size: 0.8em;
     line-height: 1.5;
 }
 
@@ -174,7 +170,7 @@ input[type="number"]:focus {
 
 .info-icon {
     color: #848484;
-    font-size: 14px;
+    font-size: 0.85em;
     font-weight: 300;
     cursor: pointer;
     margin-left: 4px;
@@ -187,7 +183,7 @@ input[type="number"]:focus {
 
 .roi-label {
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    font-size: 18px;
+    font-size: 1.1em;
     font-weight: 700;
     color: #000;
     position: relative;
@@ -224,7 +220,7 @@ input[type="number"]:focus {
 
 #roi-years {
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    font-size: 15px;
+    font-size: 0.925em;
     font-weight: 700;
     color: #000;
     line-height: 1;
@@ -232,7 +228,7 @@ input[type="number"]:focus {
 
 .label {
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    font-size: 14px;
+    font-size: 0.85em;
     color: #000;
     font-weight: 700;
     text-transform: uppercase;
@@ -264,7 +260,7 @@ input[type="number"]:focus {
 .stacked-bar-label {
     width: auto;
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    font-size: 15px;
+    font-size: 0.925em;
     font-weight: 700;
     color: #000;
     flex-shrink: 0;
@@ -281,7 +277,6 @@ input[type="number"]:focus {
 
 .stacked-bar-wrapper {
     height: 100%;
-    display: -webkit-flex;
     display: flex;
     -webkit-transition: width 0.5s ease;
     transition: width 0.5s ease;
@@ -315,33 +310,17 @@ input[type="number"]:focus {
 .seg-wipes { background: #AC2220; }
 
 .stacked-bar-details {
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
-    -webkit-align-items: center;
     align-items: center;
     justify-content: flex-end;
     gap: 10px;
     margin-bottom: 5px;
 }
 
-/* Fallback spacing for older Safari without flex gap support */
-@supports not (gap: 10px) {
-    .stacked-bar-details > * + * {
-        margin-left: 10px;
-    }
-    .roi-display > * + * {
-        margin-left: 15px;
-    }
-    .seg-detail > * + * {
-        margin-left: 4px;
-    }
-}
-
 .seg-detail {
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    font-size: 15px;
+    font-size: 0.925em;
     font-weight: 300;
     color: #000;
     display: flex;
@@ -359,7 +338,7 @@ input[type="number"]:focus {
 
 .resources-display p {
     margin: 0;
-    font-size: 14px;
+    font-size: 0.85em;
     font-weight: 300;
     color: #333;
 }
@@ -374,7 +353,7 @@ input[type="number"]:focus {
 
 .chart-container p {
     margin: 8px 0;
-    font-size: 16px;
+    font-size: 1em;
     font-weight: 300;
     color: #333;
 }
@@ -390,7 +369,7 @@ input[type="number"]:focus {
 .chart-section-title {
     font-family: 'Myriad Pro', 'Myriad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 0.9em;
     color: #000;
     margin-bottom: 10px;
 }
@@ -403,7 +382,7 @@ input[type="number"]:focus {
 
 .chart-bar-label {
     width: 80px;
-    font-size: 14px;
+    font-size: 0.85em;
     font-weight: 300;
     color: #333;
     flex-shrink: 0;
@@ -436,7 +415,7 @@ input[type="number"]:focus {
 
 .chart-bar-value {
     width: 70px;
-    font-size: 14px;
+    font-size: 0.85em;
     font-weight: 700;
     color: #333;
     text-align: right;
@@ -457,7 +436,7 @@ input[type="number"]:focus {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 14px;
+    font-size: 0.85em;
     font-weight: 300;
 }
 
@@ -475,22 +454,15 @@ input[type="number"]:focus {
     background: #AC2220;
 }
 
-/* ── macOS Safari fix: wider container + larger min font sizes ── */
+/* ── macOS Safari fix: wider container to fit Safari's larger text ── */
 .mac-safari .calculator-container {
-    width: 460px;
+    max-width: 460px;
 }
 .mac-safari h1 {
-    font-size: 18px;
+    font-size: 1.1em;
 }
 .mac-safari .toggle-btn {
-    font-size: 14px;
     padding: 9px 12px;
-}
-.mac-safari input[type="number"] {
-    font-size: 14px;
-}
-.mac-safari .info-popup {
-    font-size: 14px;
 }
 
 /* ── Mobile ── */
@@ -506,11 +478,11 @@ input[type="number"]:focus {
     }
 
     h1 {
-        font-size: 18px;
+        font-size: 1.15em;
     }
 
     h2 {
-        font-size: 16px;
+        font-size: 1em;
     }
 
     .section {
@@ -520,7 +492,7 @@ input[type="number"]:focus {
     /* Larger tap targets */
     .toggle-btn {
         padding: 10px 14px;
-        font-size: 12px;
+        font-size: 0.72em;
     }
 
     /* Let cleaning-frequency group use a 2×2 grid on very narrow screens */
@@ -535,7 +507,7 @@ input[type="number"]:focus {
     input[type="number"] {
         width: 50%;
         padding: 12px 16px;
-        font-size: 16px;
+        font-size: 1em;
     }
 
     /* Info popups: stay inside viewport */
@@ -547,7 +519,7 @@ input[type="number"]:focus {
 
     /* ROI section */
     .roi-label {
-        font-size: 16px;
+        font-size: 1em;
     }
 
     .calendar-container {
@@ -560,22 +532,22 @@ input[type="number"]:focus {
     }
 
     .seg-detail {
-        font-size: 13px;
+        font-size: 0.82em;
     }
 
     .stacked-bar-label {
-        font-size: 14px;
+        font-size: 0.85em;
     }
 
     /* Chart section */
     .chart-bar-label {
         width: 65px;
-        font-size: 13px;
+        font-size: 0.8em;
     }
 
     .chart-bar-value {
         width: 60px;
-        font-size: 13px;
+        font-size: 0.8em;
         margin-left: 6px;
     }
 }
