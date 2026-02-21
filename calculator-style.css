@@ -475,9 +475,22 @@ input[type="number"]:focus {
     background: #AC2220;
 }
 
-/* ── macOS Safari fix: Safari renders text larger than Chrome ── */
+/* ── macOS Safari fix: wider container + larger min font sizes ── */
 .mac-safari .calculator-container {
-    zoom: 0.8;
+    width: 460px;
+}
+.mac-safari h1 {
+    font-size: 18px;
+}
+.mac-safari .toggle-btn {
+    font-size: 14px;
+    padding: 9px 12px;
+}
+.mac-safari input[type="number"] {
+    font-size: 14px;
+}
+.mac-safari .info-popup {
+    font-size: 14px;
 }
 
 /* ── Mobile ── */
