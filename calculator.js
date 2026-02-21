@@ -471,6 +471,14 @@ function update() {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
+    // Detect macOS Safari — it renders Myriad Pro wider than Chrome
+    var ua = navigator.userAgent;
+    var isSafari = ua.indexOf('Safari') !== -1 && ua.indexOf('Chrome') === -1;
+    var isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+    if (isSafari && isMac) {
+        document.documentElement.classList.add('mac-safari');
+    }
+
     initializeToggles();
 
     // Info popup handlers
