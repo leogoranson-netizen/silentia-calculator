@@ -475,28 +475,9 @@ input[type="number"]:focus {
     background: #AC2220;
 }
 
-/* ── macOS Safari fix: Safari renders Myriad Pro wider than Chrome ── */
-/* TEMP TEST: background turns light blue if Safari detection works */
-.mac-safari body {
-    background: #ddeeff !important;
-}
-.mac-safari,
-.mac-safari body,
-.mac-safari h1,
-.mac-safari h2,
-.mac-safari .toggle-btn,
-.mac-safari input[type="number"],
-.mac-safari .info-popup,
-.mac-safari .roi-label,
-.mac-safari #roi-years,
-.mac-safari .label,
-.mac-safari .stacked-bar-label,
-.mac-safari .seg-detail,
-.mac-safari .chart-section-title,
-.mac-safari .chart-bar-label,
-.mac-safari .chart-bar-value,
-.mac-safari .chart-legend-item {
-    font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif !important;
+/* ── macOS Safari fix: Safari renders text larger than Chrome ── */
+.mac-safari .calculator-container {
+    zoom: 0.85;
 }
 
 /* ── Mobile ── */
