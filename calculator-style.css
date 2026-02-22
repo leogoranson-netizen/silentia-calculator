@@ -458,6 +458,9 @@ input[type="number"]:focus {
 .mac-safari body {
     font-size: 15px;
 }
+.mac-safari .toggle-btn {
+    font-size: 0.65em;
+}
 
 /* ── Mobile ── */
 @media (max-width: 480px) {
