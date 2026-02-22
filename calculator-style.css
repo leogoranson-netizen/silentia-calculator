@@ -454,15 +454,9 @@ input[type="number"]:focus {
     background: #AC2220;
 }
 
-/* ── macOS Safari fix: wider container to fit Safari's larger text ── */
-.mac-safari .calculator-container {
-    max-width: 460px;
-}
-.mac-safari h1 {
-    font-size: 1.1em;
-}
-.mac-safari .toggle-btn {
-    padding: 9px 12px;
+/* ── macOS Safari fix: reduce base font size so all em values scale down ── */
+.mac-safari body {
+    font-size: 14px;
 }
 
 /* ── Mobile ── */
