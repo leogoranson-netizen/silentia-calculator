@@ -6,41 +6,66 @@
 const state = {
     curtainType: 'textile', // 'textile' or 'disposable'
     cleaningFrequency: 'quarterly', // 'quarterly', 'monthly', 'weekly'
-    quantity: 0
+    quantity: 0,
+    units: 'metric' // 'metric' or 'imperial'
+};
+
+// Unit conversion factors
+const CONVERSIONS = {
+    litersToGallons: 0.264172,
+    kgToLbs: 2.20462
 };
 
 // Product lifespan
 const SILENTIA_LIFESPAN_YEARS = 10; // Technical lifespan of Silentia screens
 
-// Calculation constants (real cost data in euros)
-const COSTS = {
-    silentiaScreen: 1310, // Cost per Silentia screen (€1310)
-    textileCurtain: 800, // Cost per textile curtain (€800)
-    disposableCurtain: 700, // Cost per disposable curtain (€700)
+// Calculation constants (real cost data in euros, +15% inflation 2020-2026 applied)
+// Shared labour rate — all cleaning/changeover time is priced at this €/hour.
+const CLEANING_RATE_PER_HOUR = 45;
 
-    // Cleaning costs
-    textileCleaning: 48, // Cost per textile curtain cleaning (6 kg × €8/kg = €48)
-    disposableCleaning: 0, // Disposable gets replaced, not cleaned
-    disposableReplacement: 700, // Cost to replace disposable (€700)
-    silentiaCleaning: 5 // Low cleaning cost for Silentia screens
+const COSTS = {
+    silentia: {
+        product: 1360,              // Cost per Silentia screen
+        installation: 60,           // Labour for initial install (one-time)
+        replace: 1300,              // Replacement cost after product life
+        cleaningMinutes: 5,         // Minutes per cleaning event (quick wipe)
+        adminPerYear: 20,           // Admin cost added at end of each full year
+        productLifeYears: 10
+    },
+    textile: {
+        product: 305,               // Rails + curtain (one-time setup material)
+        installation: 60,           // Labour for initial install (one-time)
+        replace: 150,               // New textile curtain cost (each 5-year cycle)
+        operationMinutes: 20,       // Minutes per take-down/wash/put-up step (×3 per cycle)
+        washFee: 46,                // Laundry fee per wash cycle
+        adminPerYear: 80,           // Admin cost added at end of each full year
+        productLifeYears: 5
+    },
+    disposable: {
+        product: 150,               // Rails (one-time setup material)
+        installation: 60,           // Labour for initial install (one-time)
+        replace: 15,                // Cost per new disposable curtain (each change)
+        operationMinutes: 20,       // Minutes per take-down/install step (×3 per change)
+        adminPerYear: 80            // Admin cost added at end of each full year
+    }
 };
 
 // Environmental impact constants
 const ENVIRONMENTAL = {
     textile: {
-        // 1 curtain = 6 kg × 18 MJ/kg = 108 MJ = 30 kWh per wash
-        kWhPerCleaning: 30, // kWh per textile curtain wash
-        // 1 curtain = 6 kg × 18 L/kg = 108 liters per wash
-        waterPerCleaning: 108 // Liters per textile curtain wash
+        // 1 curtain = 4 kg × 5 kWh/kg = 20 kWh per wash
+        kWhPerCleaning: 20, // kWh per textile curtain wash
+        // 1 curtain = 4 kg × 18 L/kg = 72 liters per wash
+        waterPerCleaning: 72 // Liters per textile curtain wash
     },
     disposable: {
-        // 1 disposable curtain = 2 kg polypropylene waste per replacement
-        plasticPerUnit: 2 // kg of plastic waste per disposable curtain
+        // 1 disposable curtain = 1.2 kg polypropylene or polyester waste per replacement
+        plasticPerUnit: 1.2 // kg of plastic waste per disposable curtain
     },
     silentia: {
         kWhPerCleaning: 0, // No energy used for Silentia cleaning
         waterPerCleaning: 0, // No water used for Silentia cleaning
-        disinfectantPerCleaning: 0.02, // 0.02 liters disinfectant per screen
+        disinfectantPerCleaning: 0.01, // 0.01 liters disinfectant per screen
         wipesPerCleaning: 0.015 // 1 cleaning wipe per screen = 0.015 kg
     }
 };
@@ -87,6 +112,17 @@ function initializeToggles() {
         });
     });
 
+    // Unit system toggles
+    document.querySelectorAll('[data-units]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('[data-units]').forEach(b =>
+                b.classList.remove('active'));
+            this.classList.add('active');
+            state.units = this.dataset.units;
+            update();
+        });
+    });
+
     // Quantity input
     document.getElementById('quantity').addEventListener('input', function() {
         state.quantity = parseInt(this.value) || 0;
@@ -98,6 +134,67 @@ function initializeToggles() {
 // ROI CALCULATION
 // ============================================
 
+// Per-event labour cost helper: minutes × hourly rate.
+function labourCost(minutes) {
+    return (minutes / 60) * CLEANING_RATE_PER_HOUR;
+}
+
+// Cost per single cleaning/change event for each option.
+// Silentia: 5 min wipe × €45/hr = €3.75
+// Textile:  3 × 20 min labour + €46 wash fee = €45 + €46 = €91
+// Disposable: €15 new curtain + 3 × 20 min labour = €15 + €45 = €60
+function perEventCost(option) {
+    if (option === 'silentia') {
+        return labourCost(COSTS.silentia.cleaningMinutes);
+    }
+    if (option === 'textile') {
+        return labourCost(3 * COSTS.textile.operationMinutes) + COSTS.textile.washFee;
+    }
+    // disposable
+    return COSTS.disposable.replace + labourCost(3 * COSTS.disposable.operationMinutes);
+}
+
+// Count replacements that have occurred by `year`, excluding one that lands exactly
+// at year-end (end-of-lifespan = decommissioning, not a fresh replacement).
+function replacementsByYear(year, lifespanYears) {
+    if (year <= 0) return 0;
+    return Math.floor((year - 0.0001) / lifespanYears);
+}
+
+// Admin accrues at the end of each full year: 0 before year 1, adminPerYear × floor(year).
+function adminCostAtYear(qty, year, perYear) {
+    return qty * perYear * Math.max(0, Math.floor(year));
+}
+
+// Cumulative Silentia cost at a given year.
+// Initial + cleaning × years + €1300 per in-period replacement (none within the first 10 yrs) + admin.
+function silentiaCostAtYear(qty, year, cleaningsPerYear) {
+    const s = COSTS.silentia;
+    const initial = qty * (s.product + s.installation);
+    const cleaning = qty * perEventCost('silentia') * cleaningsPerYear * year;
+    const replacementCost = qty * s.replace * replacementsByYear(year, s.productLifeYears);
+    const admin = adminCostAtYear(qty, year, s.adminPerYear);
+    return initial + cleaning + replacementCost + admin;
+}
+
+// Cumulative curtain cost at a given year (textile has 5-year replacement jumps).
+function curtainCostAtYear(qty, type, year, cleaningsPerYear) {
+    if (type === 'textile') {
+        const t = COSTS.textile;
+        const initial = qty * (t.product + t.installation);
+        const cleaning = qty * perEventCost('textile') * cleaningsPerYear * year;
+        const replacementCost = qty * t.replace * replacementsByYear(year, t.productLifeYears);
+        const admin = adminCostAtYear(qty, year, t.adminPerYear);
+        return initial + cleaning + replacementCost + admin;
+    } else {
+        const d = COSTS.disposable;
+        const initial = qty * (d.product + d.installation);
+        const cleaning = qty * perEventCost('disposable') * cleaningsPerYear * year;
+        const admin = adminCostAtYear(qty, year, d.adminPerYear);
+        return initial + cleaning + admin;
+    }
+}
+
 function calculateROI() {
     const qty = state.quantity;
     if (qty <= 0) {
@@ -106,44 +203,30 @@ function calculateROI() {
 
     const cleaningsPerYear = FREQUENCY_MULTIPLIER[state.cleaningFrequency];
 
-    // Initial investment
-    const silentiaInitial = qty * COSTS.silentiaScreen;
-    const curtainInitial = qty * (state.curtainType === 'textile' ?
-        COSTS.textileCurtain : COSTS.disposableCurtain);
+    // If curtain is already cheaper day 1 (before any operating costs accrue),
+    // Silentia never pays back.
+    const sInit = silentiaCostAtYear(qty, 0, cleaningsPerYear);
+    const cInit = curtainCostAtYear(qty, state.curtainType, 0, cleaningsPerYear);
 
-    // Annual operating costs
-    let silentiaAnnual = qty * COSTS.silentiaCleaning * cleaningsPerYear;
-    let curtainAnnual;
-
-    if (state.curtainType === 'textile') {
-        curtainAnnual = qty * COSTS.textileCleaning * cleaningsPerYear;
-    } else {
-        // Disposable: replaced each cleaning
-        curtainAnnual = qty * COSTS.disposableReplacement * cleaningsPerYear;
+    if (cInit >= sInit) {
+        // Curtain already more expensive up front → Silentia wins immediately.
+        return { years: 0, valid: true };
     }
 
-    // Calculate break-even point
-    // Total cost Silentia: silentiaInitial + silentiaAnnual × years
-    // Total cost Curtain: curtainInitial + curtainAnnual × years
-    // Break even when: silentiaInitial + silentiaAnnual × years = curtainInitial + curtainAnnual × years
-    // Solving for years: years = (silentiaInitial - curtainInitial) / (curtainAnnual - silentiaAnnual)
-
-    const initialDifference = silentiaInitial - curtainInitial;
-    const annualSavings = curtainAnnual - silentiaAnnual;
-
-    if (annualSavings <= 0) {
-        // Silentia is more expensive to operate, no break-even
-        return { years: 999, valid: false };
+    // Iterate to find first year where Silentia total ≤ curtain total.
+    // Step small enough that 5-year textile replacement jumps don't make us skip
+    // the crossing point.
+    const maxYears = 50;
+    const step = 0.05;
+    for (let y = step; y <= maxYears; y += step) {
+        const s = silentiaCostAtYear(qty, y, cleaningsPerYear);
+        const c = curtainCostAtYear(qty, state.curtainType, y, cleaningsPerYear);
+        if (s <= c) {
+            return { years: y, valid: true };
+        }
     }
 
-    const breakEvenYears = initialDifference / annualSavings;
-
-    return {
-        years: Math.max(0, breakEvenYears), // Return raw number, not formatted
-        valid: true,
-        savings: annualSavings,
-        initialDiff: initialDifference
-    };
+    return { years: 999, valid: false };
 }
 
 // ============================================
@@ -211,21 +294,18 @@ function displayChart() {
     const cleaningsPerYear = FREQUENCY_MULTIPLIER[state.cleaningFrequency];
     const curtainTypeName = state.curtainType === 'textile' ? 'Textile' : 'Disposable';
 
-    // Calculate costs
-    const silentiaInitial = qty * COSTS.silentiaScreen;
-    const curtainInitial = qty * (state.curtainType === 'textile' ? COSTS.textileCurtain : COSTS.disposableCurtain);
+    // Initial investment (year 0)
+    const silentiaInitial = silentiaCostAtYear(qty, 0, cleaningsPerYear);
+    const curtainInitial = curtainCostAtYear(qty, state.curtainType, 0, cleaningsPerYear);
 
-    const silentiaAnnual = qty * COSTS.silentiaCleaning * cleaningsPerYear;
-    let curtainAnnual;
-    if (state.curtainType === 'textile') {
-        curtainAnnual = qty * COSTS.textileCleaning * cleaningsPerYear;
-    } else {
-        curtainAnnual = qty * COSTS.disposableReplacement * cleaningsPerYear;
-    }
+    // Full lifespan totals (includes textile 5-year replacements for the curtain side)
+    const silentiaTotal = silentiaCostAtYear(qty, SILENTIA_LIFESPAN_YEARS, cleaningsPerYear);
+    const curtainTotal = curtainCostAtYear(qty, state.curtainType, SILENTIA_LIFESPAN_YEARS, cleaningsPerYear);
 
-    // 10-year total cost
-    const silentiaTotal = silentiaInitial + (silentiaAnnual * SILENTIA_LIFESPAN_YEARS);
-    const curtainTotal = curtainInitial + (curtainAnnual * SILENTIA_LIFESPAN_YEARS);
+    // Average annual = (total - initial) / lifespan. For textile this amortizes the
+    // 5-year replacement into the annual bar; the total bar still shows the true sum.
+    const silentiaAnnual = (silentiaTotal - silentiaInitial) / SILENTIA_LIFESPAN_YEARS;
+    const curtainAnnual = (curtainTotal - curtainInitial) / SILENTIA_LIFESPAN_YEARS;
 
     // Format currency
     const formatCurrency = (value) => '€' + value.toLocaleString('en-US');
@@ -294,10 +374,7 @@ function displayResults() {
 
     if (roi.valid && roi.years !== 999) {
         const years = roi.years;
-        if (years > SILENTIA_LIFESPAN_YEARS) {
-            roiElement.textContent = '10+';
-            yearLabelElement.textContent = 'YEARS';
-        } else if (years < 1/52) {
+        if (years < 1/52) {
             // Convert to days when less than 1 week
             const days = Math.round(years * 365);
             roiElement.textContent = Math.max(1, days).toString();
@@ -330,16 +407,10 @@ function displayResults() {
                 yearLabelElement.textContent = months === 1 ? 'MONTH' : 'MONTHS';
             }
         } else {
-            // Display years - remove decimal if whole number
-            const roundedYears = Math.round(years * 10) / 10; // Round to 1 decimal place
-            if (Math.abs(roundedYears - Math.round(roundedYears)) < 0.01) {
-                // It's essentially a whole number
-                roiElement.textContent = Math.round(roundedYears).toString();
-            } else {
-                roiElement.textContent = roundedYears.toFixed(1);
-            }
-            // Update label: "YEAR" if 1 or less, "YEARS" if more than 1
-            yearLabelElement.textContent = roundedYears > 1 ? 'YEARS' : 'YEAR';
+            // Display years as a whole integer (no decimals)
+            const wholeYears = Math.round(years);
+            roiElement.textContent = wholeYears.toString();
+            yearLabelElement.textContent = wholeYears === 1 ? 'YEAR' : 'YEARS';
         }
     } else if (roi.years === 999) {
         roiElement.textContent = 'N/A';
@@ -359,11 +430,22 @@ function displayResults() {
 
     const curtainTypeName = state.curtainType === 'textile' ? 'Textile' : 'Disposable';
 
+    // Unit conversion helpers
+    const imperial = state.units === 'imperial';
+    const convertVolume = (liters) => imperial ? liters * CONVERSIONS.litersToGallons : liters;
+    const convertWeight = (kg) => imperial ? kg * CONVERSIONS.kgToLbs : kg;
+    const volUnit = imperial ? 'gal' : 'L';
+    const weightUnit = imperial ? 'lbs' : 'kg';
+
     let chartHTML = '';
 
     if (resources.type === 'textile') {
-        const curtainTotal = Number(resources.curtainKWh) + Number(resources.curtainWater);
-        const silentiaTotal = Number(resources.silentiaDisinfectant) + Number(resources.silentiaWipes);
+        const curtainWaterDisplay = parseFloat(convertVolume(Number(resources.curtainWater)).toFixed(0));
+        const silentiaDisinfDisplay = parseFloat(convertVolume(resources.silentiaDisinfectant).toFixed(2));
+        const silentiaWipesDisplay = parseFloat(convertWeight(resources.silentiaWipes).toFixed(2));
+
+        const curtainTotal = Number(resources.curtainKWh) + curtainWaterDisplay;
+        const silentiaTotal = silentiaDisinfDisplay + silentiaWipesDisplay;
         const maxTotal = Math.max(curtainTotal, silentiaTotal);
 
         // Bar widths scaled relative to each other
@@ -372,16 +454,16 @@ function displayResults() {
 
         // Segment percentages within each bar
         const curtainEnergyPct = curtainTotal > 0 ? (Number(resources.curtainKWh) / curtainTotal) * 100 : 0;
-        const curtainWaterPct = curtainTotal > 0 ? (Number(resources.curtainWater) / curtainTotal) * 100 : 0;
-        const silentiaDisinfPct = silentiaTotal > 0 ? (Number(resources.silentiaDisinfectant) / silentiaTotal) * 100 : 0;
-        const silentiaWipesPct = silentiaTotal > 0 ? (Number(resources.silentiaWipes) / silentiaTotal) * 100 : 0;
+        const curtainWaterPct = curtainTotal > 0 ? (curtainWaterDisplay / curtainTotal) * 100 : 0;
+        const silentiaDisinfPct = silentiaTotal > 0 ? (silentiaDisinfDisplay / silentiaTotal) * 100 : 0;
+        const silentiaWipesPct = silentiaTotal > 0 ? (silentiaWipesDisplay / silentiaTotal) * 100 : 0;
 
         chartHTML = `
             <div class="stacked-bar-section">
                 <div class="stacked-bar-details">
                     <span class="stacked-bar-label">${curtainTypeName}:</span>
                     <span class="seg-detail"><span class="seg-dot seg-energy"></span>${resources.curtainKWh} <span class="unit-label">kWh</span></span>
-                    <span class="seg-detail"><span class="seg-dot seg-water"></span>${resources.curtainWater} <span class="unit-label">L waste water</span></span>
+                    <span class="seg-detail"><span class="seg-dot seg-water"></span>${curtainWaterDisplay} <span class="unit-label">${volUnit} waste water</span></span>
                 </div>
                 <div class="stacked-bar-row">
                     <div class="stacked-bar-track">
@@ -395,8 +477,8 @@ function displayResults() {
             <div class="stacked-bar-section">
                 <div class="stacked-bar-details">
                     <span class="stacked-bar-label">Silentia:</span>
-                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${resources.silentiaWipes} <span class="unit-label">kg wipes</span></span>
-                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${resources.silentiaDisinfectant} <span class="unit-label">L disinfectant</span></span>
+                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${silentiaWipesDisplay} <span class="unit-label">${weightUnit} wipes</span></span>
+                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${silentiaDisinfDisplay} <span class="unit-label">${volUnit} disinfectant</span></span>
                 </div>
                 <div class="stacked-bar-row">
                     <div class="stacked-bar-track">
@@ -409,21 +491,25 @@ function displayResults() {
             </div>
         `;
     } else {
-        const curtainTotal = Number(resources.plasticWaste);
-        const silentiaTotal = Number(resources.silentiaDisinfectant) + Number(resources.silentiaWipes);
+        const plasticDisplay = parseFloat(convertWeight(Number(resources.plasticWaste)).toFixed(0));
+        const silentiaDisinfDisplay = parseFloat(convertVolume(resources.silentiaDisinfectant).toFixed(2));
+        const silentiaWipesDisplay = parseFloat(convertWeight(resources.silentiaWipes).toFixed(2));
+
+        const curtainTotal = plasticDisplay;
+        const silentiaTotal = silentiaDisinfDisplay + silentiaWipesDisplay;
         const maxTotal = Math.max(curtainTotal, silentiaTotal);
 
         const curtainBarWidth = maxTotal > 0 ? (curtainTotal / maxTotal) * 100 : 0;
         const silentiaBarWidth = maxTotal > 0 ? (silentiaTotal / maxTotal) * 100 : 0;
 
-        const silentiaDisinfPct = silentiaTotal > 0 ? (Number(resources.silentiaDisinfectant) / silentiaTotal) * 100 : 0;
-        const silentiaWipesPct = silentiaTotal > 0 ? (Number(resources.silentiaWipes) / silentiaTotal) * 100 : 0;
+        const silentiaDisinfPct = silentiaTotal > 0 ? (silentiaDisinfDisplay / silentiaTotal) * 100 : 0;
+        const silentiaWipesPct = silentiaTotal > 0 ? (silentiaWipesDisplay / silentiaTotal) * 100 : 0;
 
         chartHTML = `
             <div class="stacked-bar-section">
                 <div class="stacked-bar-details">
                     <span class="stacked-bar-label">${curtainTypeName}:</span>
-                    <span class="seg-detail"><span class="seg-dot seg-plastic"></span>${resources.plasticWaste} <span class="unit-label">kg plastic</span></span>
+                    <span class="seg-detail"><span class="seg-dot seg-plastic"></span>${plasticDisplay} <span class="unit-label">${weightUnit} plastic</span></span>
                 </div>
                 <div class="stacked-bar-row">
                     <div class="stacked-bar-track">
@@ -436,8 +522,8 @@ function displayResults() {
             <div class="stacked-bar-section">
                 <div class="stacked-bar-details">
                     <span class="stacked-bar-label">Silentia:</span>
-                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${resources.silentiaWipes} <span class="unit-label">kg wipes</span></span>
-                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${resources.silentiaDisinfectant} <span class="unit-label">L disinfectant</span></span>
+                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${silentiaWipesDisplay} <span class="unit-label">${weightUnit} wipes</span></span>
+                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${silentiaDisinfDisplay} <span class="unit-label">${volUnit} disinfectant</span></span>
                 </div>
                 <div class="stacked-bar-row">
                     <div class="stacked-bar-track">
