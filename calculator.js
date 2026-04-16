@@ -437,6 +437,17 @@ function displayResults() {
     const volUnit = imperial ? 'gal' : 'L';
     const weightUnit = imperial ? 'lbs' : 'kg';
 
+    // Silentia-only display format: tiers based on value magnitude.
+    //   > 0.9      → whole number, no decimal (e.g. 1)
+    //   > 0.09     → one decimal (e.g. 0.1)
+    //   otherwise  → two decimals (preserves small values like 0.04)
+    const fmtSilentia = (v) => {
+        const n = Number(v);
+        if (n > 0.9) return Math.round(n).toString();
+        if (n > 0.09) return n.toFixed(1);
+        return n.toFixed(2);
+    };
+
     let chartHTML = '';
 
     if (resources.type === 'textile') {
@@ -477,8 +488,8 @@ function displayResults() {
             <div class="stacked-bar-section">
                 <div class="stacked-bar-details">
                     <span class="stacked-bar-label">Silentia:</span>
-                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${silentiaWipesDisplay} <span class="unit-label">${weightUnit} wipes</span></span>
-                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${silentiaDisinfDisplay} <span class="unit-label">${volUnit} disinfectant</span></span>
+                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${fmtSilentia(silentiaWipesDisplay)} <span class="unit-label">${weightUnit} wipes</span></span>
+                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${fmtSilentia(silentiaDisinfDisplay)} <span class="unit-label">${volUnit} disinfectant</span></span>
                 </div>
                 <div class="stacked-bar-row">
                     <div class="stacked-bar-track">
@@ -522,8 +533,8 @@ function displayResults() {
             <div class="stacked-bar-section">
                 <div class="stacked-bar-details">
                     <span class="stacked-bar-label">Silentia:</span>
-                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${silentiaWipesDisplay} <span class="unit-label">${weightUnit} wipes</span></span>
-                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${silentiaDisinfDisplay} <span class="unit-label">${volUnit} disinfectant</span></span>
+                    <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${fmtSilentia(silentiaWipesDisplay)} <span class="unit-label">${weightUnit} wipes</span></span>
+                    <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${fmtSilentia(silentiaDisinfDisplay)} <span class="unit-label">${volUnit} disinfectant</span></span>
                 </div>
                 <div class="stacked-bar-row">
                     <div class="stacked-bar-track">
