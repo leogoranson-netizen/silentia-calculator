@@ -112,7 +112,7 @@
         </section>
 
         <!-- Resources Display -->
-        <section class="section" style="margin-top: -25px;">
+        <section class="section">
             <h2 style="position: relative;">Resources <span class="info-icon" data-popup="resources-popup">&#9432;</span>
                 <div class="info-popup" id="resources-popup">
                     <p>Shows the annual resource consumption for each option based on your selected quantity and cleaning frequency.</p>
@@ -123,6 +123,12 @@
             </h2>
             <div class="resources-display" id="resources-output">
                 <p style="font-weight: 300;">Enter quantity and click Calculate to see results</p>
+            </div>
+            <div class="units-toggle-wrapper">
+                <span class="toggle-group units-toggle">
+                    <button class="toggle-btn active" data-units="metric">Metric</button>
+                    <button class="toggle-btn" data-units="imperial">Imperial</button>
+                </span>
             </div>
         </section>
     </div>
