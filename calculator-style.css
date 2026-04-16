@@ -95,6 +95,18 @@ h2 {
     color: white;
 }
 
+/* Units Toggle */
+.units-toggle-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+
+.units-toggle {
+    transform: scale(0.65);
+    transform-origin: left center;
+}
+
 /* Input Field */
 input[type="number"] {
     width: 38%;
