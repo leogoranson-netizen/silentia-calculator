@@ -45,7 +45,11 @@
                     <p>This is used to calculate the total cost and environmental impact for both options.</p>
                 </div>
             </h2>
-            <input type="number" id="quantity" placeholder="Enter number" min="0" inputmode="numeric" pattern="[0-9]*">
+            <div class="quantity-row">
+                <input type="number" id="quantity" placeholder="Enter number" min="0" inputmode="numeric" pattern="[0-9]*">
+                <button class="qty-btn qty-minus" id="qtyMinus">&minus;</button>
+                <button class="qty-btn qty-plus" id="qtyPlus">+</button>
+            </div>
         </section>
 
         <hr>
@@ -112,7 +116,7 @@
         </section>
 
         <!-- Resources Display -->
-        <section class="section">
+        <section class="section section-resources">
             <h2 style="position: relative;">Resources <span class="info-icon" data-popup="resources-popup">&#9432;</span>
                 <div class="info-popup" id="resources-popup">
                     <p>Shows the annual resource consumption for each option based on your selected quantity and cleaning frequency.</p>
