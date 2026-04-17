@@ -126,7 +126,13 @@ function initializeToggles() {
     // Quantity input
     const quantityInput = document.getElementById('quantity');
     quantityInput.addEventListener('input', function() {
-        state.quantity = parseInt(this.value) || 0;
+        const val = parseInt(this.value);
+        if (!val || val <= 0) {
+            this.value = '';
+            state.quantity = 0;
+        } else {
+            state.quantity = val;
+        }
         update();
     });
 
@@ -140,11 +146,14 @@ function initializeToggles() {
 
     document.getElementById('qtyMinus').addEventListener('click', function() {
         const cur = parseInt(quantityInput.value) || 0;
-        if (cur > 0) {
+        if (cur > 1) {
             quantityInput.value = cur - 1;
             state.quantity = cur - 1;
-            update();
+        } else {
+            quantityInput.value = '';
+            state.quantity = 0;
         }
+        update();
     });
 }
 
@@ -585,10 +594,8 @@ function displayResults() {
 // ============================================
 
 function update() {
-    if (state.quantity > 0) {
-        displayResults();
-        displayChart();
-    }
+    displayResults();
+    displayChart();
 }
 
 // ============================================
