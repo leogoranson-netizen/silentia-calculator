@@ -135,7 +135,9 @@ h2 {
     transition: background 0.2s;
     flex-shrink: 0;
     padding: 0;
-    line-height: 1;
+    padding-bottom: 1px;
+    line-height: 0;
+    text-align: center;
 }
 
 .qty-btn:hover {
@@ -230,7 +232,7 @@ input[type="number"]:focus {
     margin-left: 4px;
     vertical-align: middle;
     position: relative;
-    top: -2px;
+    top: -0.1em;
     -webkit-text-stroke: 0px;
     opacity: 1;
 }
