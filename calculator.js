@@ -124,9 +124,27 @@ function initializeToggles() {
     });
 
     // Quantity input
-    document.getElementById('quantity').addEventListener('input', function() {
+    const quantityInput = document.getElementById('quantity');
+    quantityInput.addEventListener('input', function() {
         state.quantity = parseInt(this.value) || 0;
         update();
+    });
+
+    // Plus / minus buttons
+    document.getElementById('qtyPlus').addEventListener('click', function() {
+        const cur = parseInt(quantityInput.value) || 0;
+        quantityInput.value = cur + 1;
+        state.quantity = cur + 1;
+        update();
+    });
+
+    document.getElementById('qtyMinus').addEventListener('click', function() {
+        const cur = parseInt(quantityInput.value) || 0;
+        if (cur > 0) {
+            quantityInput.value = cur - 1;
+            state.quantity = cur - 1;
+            update();
+        }
     });
 }
 
@@ -448,26 +466,42 @@ function displayResults() {
         return n.toFixed(2);
     };
 
+    // Silentia bar always uses imperial textile reference scale so it looks
+    // the same regardless of textile/disposable selection.
+    const cleaningsPerYear = FREQUENCY_MULTIPLIER[state.cleaningFrequency];
+    const qty = state.quantity;
+    const silentiaDisinfImperial = qty * ENVIRONMENTAL.silentia.disinfectantPerCleaning * cleaningsPerYear * CONVERSIONS.litersToGallons;
+    const silentiaWipesImperial = qty * ENVIRONMENTAL.silentia.wipesPerCleaning * cleaningsPerYear * CONVERSIONS.kgToLbs;
+    const silentiaTotalRef = silentiaDisinfImperial + silentiaWipesImperial;
+    const textileKWhRef = qty * ENVIRONMENTAL.textile.kWhPerCleaning * cleaningsPerYear;
+    const textileWaterRef = qty * ENVIRONMENTAL.textile.waterPerCleaning * cleaningsPerYear * CONVERSIONS.litersToGallons;
+    const textileCurtainRef = textileKWhRef + textileWaterRef;
+    const silentiaMaxRef = Math.max(textileCurtainRef, silentiaTotalRef);
+    const silentiaBarWidth = silentiaMaxRef > 0 ? (silentiaTotalRef / silentiaMaxRef) * 100 : 0;
+    const silentiaDisinfPct = silentiaTotalRef > 0 ? (silentiaDisinfImperial / silentiaTotalRef) * 100 : 0;
+    const silentiaWipesPct = silentiaTotalRef > 0 ? (silentiaWipesImperial / silentiaTotalRef) * 100 : 0;
+
     let chartHTML = '';
 
     if (resources.type === 'textile') {
+        // Display values (converted to imperial if needed)
         const curtainWaterDisplay = parseFloat(convertVolume(Number(resources.curtainWater)).toFixed(0));
         const silentiaDisinfDisplay = parseFloat(convertVolume(resources.silentiaDisinfectant).toFixed(2));
         const silentiaWipesDisplay = parseFloat(convertWeight(resources.silentiaWipes).toFixed(2));
 
-        const curtainTotal = Number(resources.curtainKWh) + curtainWaterDisplay;
-        const silentiaTotal = silentiaDisinfDisplay + silentiaWipesDisplay;
-        const maxTotal = Math.max(curtainTotal, silentiaTotal);
+        // Bar widths always use imperial values so proportions stay constant
+        const rawCurtainKWh = Number(resources.curtainKWh);
+        const rawCurtainWater = Number(resources.curtainWater) * CONVERSIONS.litersToGallons;
 
-        // Bar widths scaled relative to each other
+        const curtainTotal = rawCurtainKWh + rawCurtainWater;
+        const maxTotal = Math.max(curtainTotal, silentiaTotalRef);
+
+        // Curtain bar scaled against its own max
         const curtainBarWidth = maxTotal > 0 ? (curtainTotal / maxTotal) * 100 : 0;
-        const silentiaBarWidth = maxTotal > 0 ? (silentiaTotal / maxTotal) * 100 : 0;
 
-        // Segment percentages within each bar
-        const curtainEnergyPct = curtainTotal > 0 ? (Number(resources.curtainKWh) / curtainTotal) * 100 : 0;
-        const curtainWaterPct = curtainTotal > 0 ? (curtainWaterDisplay / curtainTotal) * 100 : 0;
-        const silentiaDisinfPct = silentiaTotal > 0 ? (silentiaDisinfDisplay / silentiaTotal) * 100 : 0;
-        const silentiaWipesPct = silentiaTotal > 0 ? (silentiaWipesDisplay / silentiaTotal) * 100 : 0;
+        // Curtain segment percentages
+        const curtainEnergyPct = curtainTotal > 0 ? (rawCurtainKWh / curtainTotal) * 100 : 0;
+        const curtainWaterPct = curtainTotal > 0 ? (rawCurtainWater / curtainTotal) * 100 : 0;
 
         chartHTML = `
             <div class="stacked-bar-section">
@@ -502,19 +536,14 @@ function displayResults() {
             </div>
         `;
     } else {
+        // Display values (converted to imperial if needed)
         const plasticDisplay = parseFloat(convertWeight(Number(resources.plasticWaste)).toFixed(0));
         const silentiaDisinfDisplay = parseFloat(convertVolume(resources.silentiaDisinfectant).toFixed(2));
         const silentiaWipesDisplay = parseFloat(convertWeight(resources.silentiaWipes).toFixed(2));
 
-        const curtainTotal = plasticDisplay;
-        const silentiaTotal = silentiaDisinfDisplay + silentiaWipesDisplay;
-        const maxTotal = Math.max(curtainTotal, silentiaTotal);
-
-        const curtainBarWidth = maxTotal > 0 ? (curtainTotal / maxTotal) * 100 : 0;
-        const silentiaBarWidth = maxTotal > 0 ? (silentiaTotal / maxTotal) * 100 : 0;
-
-        const silentiaDisinfPct = silentiaTotal > 0 ? (silentiaDisinfDisplay / silentiaTotal) * 100 : 0;
-        const silentiaWipesPct = silentiaTotal > 0 ? (silentiaWipesDisplay / silentiaTotal) * 100 : 0;
+        // Curtain bar uses its own scale
+        const rawPlastic = Number(resources.plasticWaste) * CONVERSIONS.kgToLbs;
+        const curtainBarWidth = rawPlastic > 0 ? 100 : 0;
 
         chartHTML = `
             <div class="stacked-bar-section">
