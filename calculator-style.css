@@ -108,6 +108,47 @@ h2 {
 }
 
 /* Input Field */
+.quantity-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.quantity-row input[type="number"] {
+    margin-right: 6px;
+}
+
+.qty-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #fff;
+    font-size: 1.3em;
+    font-weight: 300;
+    color: #333;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex-shrink: 0;
+    padding: 0;
+    line-height: 1;
+}
+
+.qty-btn:hover {
+    background: #f5f5f5;
+}
+
+.qty-btn:active {
+    background: #eee;
+}
+
+.qty-plus {
+    color: #AC2220;
+}
+
 input[type="number"] {
     width: 38%;
     padding: 9px 15px;
@@ -143,7 +184,7 @@ input[type="number"]:focus {
     align-items: center;
     gap: 15px;
     padding: 10px 0;
-    margin-top: -3px;
+    margin-top: -13px;
 }
 
 .info-popup {
@@ -248,6 +289,10 @@ input[type="number"]:focus {
 }
 
 /* Resources Display — Stacked Bars */
+.section-resources {
+    margin-top: -25px;
+}
+
 .resources-display {
     display: block;
 }
