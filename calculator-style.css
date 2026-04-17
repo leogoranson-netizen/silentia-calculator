@@ -564,12 +564,7 @@ input[type="number"]:focus {
         font-size: 1em;
     }
 
-    /* Info popups: stay inside viewport */
-    .info-popup {
-        width: 240px;
-        left: auto;
-        right: 0;
-    }
+    /* Info popups: same position as desktop */
 
     /* ROI section */
     .roi-label {
