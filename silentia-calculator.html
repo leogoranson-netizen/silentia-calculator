@@ -66,9 +66,9 @@
                         <!-- Drop Shadow Filter -->
                         <defs>
                             <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-                                <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
-                                <feOffset in="blur" dx="0" dy="4" result="offsetBlur"/>
-                                <feFlood flood-color="#000" flood-opacity="0.2" result="color"/>
+                                <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+                                <feOffset in="blur" dx="0" dy="3" result="offsetBlur"/>
+                                <feFlood flood-color="#000" flood-opacity="0.25" result="color"/>
                                 <feComposite in="color" in2="offsetBlur" operator="in" result="shadow"/>
                                 <feMerge>
                                     <feMergeNode in="shadow"/>
