@@ -553,6 +553,7 @@ input[type="number"]:focus {
 
     .toggle-btn {
         border-radius: 16px;
+        padding: 0 13px;
     }
 
     input[type="number"] {
