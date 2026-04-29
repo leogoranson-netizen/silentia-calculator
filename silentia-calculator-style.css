@@ -70,7 +70,7 @@ h2 {
 }
 
 .toggle-btn {
-    padding: 0 16px;
+    padding: 0 12px;
     height: 29px;
     line-height: 29px;
     border: none;
@@ -553,7 +553,7 @@ input[type="number"]:focus {
 
     .toggle-btn {
         border-radius: 16px;
-        padding: 0 13px;
+        padding: 0 12px;
     }
 
     input[type="number"] {
