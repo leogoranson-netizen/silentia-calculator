@@ -314,9 +314,11 @@ function displayChart() {
     const chartElement = document.getElementById('chart-output');
 
     if (qty <= 0) {
-        chartElement.innerHTML = '<p>Enter quantity and click Calculate to see chart</p>';
+        if (chartElement) chartElement.innerHTML = '<p>Enter quantity and click Calculate to see chart</p>';
         return;
     }
+
+    if (!chartElement) return;
 
     const cleaningsPerYear = FREQUENCY_MULTIPLIER[state.cleaningFrequency];
     const curtainTypeName = state.curtainType === 'textile' ? 'Textile' : 'Disposable';
@@ -515,7 +517,7 @@ function displayResults() {
         chartHTML = `
             <div class="stacked-bar-section">
                 <div class="stacked-bar-details">
-                    <span class="stacked-bar-label">${curtainTypeName}:</span>
+                    <span class="stacked-bar-label">${curtainTypeName}</span>
                     <span class="seg-detail"><span class="seg-dot seg-energy"></span>${resources.curtainKWh} <span class="unit-label">kWh</span></span>
                     <span class="seg-detail"><span class="seg-dot seg-water"></span>${curtainWaterDisplay} <span class="unit-label">${volUnit} waste water</span></span>
                 </div>
@@ -530,7 +532,7 @@ function displayResults() {
             </div>
             <div class="stacked-bar-section">
                 <div class="stacked-bar-details">
-                    <span class="stacked-bar-label">Silentia:</span>
+                    <span class="stacked-bar-label">Silentia</span>
                     <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${fmtSilentia(silentiaWipesDisplay)} <span class="unit-label">${weightUnit} wipes</span></span>
                     <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${fmtSilentia(silentiaDisinfDisplay)} <span class="unit-label">${volUnit} disinfectant</span></span>
                 </div>
@@ -557,7 +559,7 @@ function displayResults() {
         chartHTML = `
             <div class="stacked-bar-section">
                 <div class="stacked-bar-details">
-                    <span class="stacked-bar-label">${curtainTypeName}:</span>
+                    <span class="stacked-bar-label">${curtainTypeName}</span>
                     <span class="seg-detail"><span class="seg-dot seg-plastic"></span>${plasticDisplay} <span class="unit-label">${weightUnit} plastic</span></span>
                 </div>
                 <div class="stacked-bar-row">
@@ -570,7 +572,7 @@ function displayResults() {
             </div>
             <div class="stacked-bar-section">
                 <div class="stacked-bar-details">
-                    <span class="stacked-bar-label">Silentia:</span>
+                    <span class="stacked-bar-label">Silentia</span>
                     <span class="seg-detail"><span class="seg-dot seg-wipes"></span>${fmtSilentia(silentiaWipesDisplay)} <span class="unit-label">${weightUnit} wipes</span></span>
                     <span class="seg-detail"><span class="seg-dot seg-disinfectant"></span>${fmtSilentia(silentiaDisinfDisplay)} <span class="unit-label">${volUnit} disinfectant</span></span>
                 </div>
