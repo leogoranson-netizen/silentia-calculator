@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Silentia Calculator</title>
+    <script>
+        var ua = navigator.userAgent;
+        if (/Safari/i.test(ua) && !/Chrome/i.test(ua) && /Macintosh/i.test(ua)) {
+            document.documentElement.classList.add('mac-safari');
+        }
+    </script>
+    <link rel="stylesheet" href="silentia-calculator-style.css?v=1">
+</head>
+<body>
+    <div class="calculator-container">
+        <!-- Curtain Type Selection -->
+        <section class="section">
+            <h2>Curtain type</h2>
+            <div class="toggle-group">
+                <button class="toggle-btn active" data-type="textile">Textile</button>
+                <button class="toggle-btn" data-type="disposable">Disposable</button>
+            </div>
+        </section>
+
+        <!-- Cleaning Frequency Selection -->
+        <section class="section">
+            <h2>Cleaning</h2>
+            <div class="toggle-group">
+                <button class="toggle-btn active" data-frequency="quarterly">Quarterly</button>
+                <button class="toggle-btn" data-frequency="monthly">Monthly</button>
+                <button class="toggle-btn" data-frequency="weekly">Weekly</button>
+                <button class="toggle-btn" data-frequency="daily">Daily</button>
+            </div>
+        </section>
+
+        <!-- Quantity Input -->
+        <section class="section">
+            <h2 style="position: relative;">Quantity of curtains vs screens <span class="info-icon" data-popup="quantity-popup">&#9432;</span>
+                <div class="info-popup" id="quantity-popup">
+                    <p>Enter the number of curtains or screens in your facility.</p>
+                    <p>This is used to calculate the total cost and environmental impact for both options.</p>
+                </div>
+            </h2>
+            <div class="quantity-row">
+                <input type="number" id="quantity" placeholder="Enter number" min="0" inputmode="numeric" pattern="[0-9]*">
+                <button class="qty-btn qty-minus" id="qtyMinus">&minus;</button>
+                <button class="qty-btn qty-plus" id="qtyPlus">+</button>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- ROI Display -->
+        <section class="section">
+            <div class="roi-display">
+                <span class="roi-label">Return On Investment <span class="info-icon" data-popup="roi-popup">&#9432;</span>
+                    <div class="info-popup" id="roi-popup">
+                        <p>ROI shows how quickly Silentia screens pay for themselves compared to curtains.</p>
+                        <p>It calculates the break-even point where the higher initial cost of Silentia is offset by lower ongoing cleaning/replacement costs.</p>
+                        <p><strong>Formula:</strong> (Silentia cost - Curtain cost) &divide; (Annual curtain cost - Annual Silentia cost)</p>
+                    </div>
+                </span>
+                <div class="calendar-container">
+                    <svg class="calendar-icon" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Drop Shadow Filter -->
+                        <defs>
+                            <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+                                <feOffset in="blur" dx="0" dy="4" result="offsetBlur"/>
+                                <feFlood flood-color="#000" flood-opacity="0.2" result="color"/>
+                                <feComposite in="color" in2="offsetBlur" operator="in" result="shadow"/>
+                                <feMerge>
+                                    <feMergeNode in="shadow"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+
+                        <!-- Calendar Body with rounded corners -->
+                        <rect x="25" y="50" width="150" height="155" rx="20" ry="20"
+                              fill="#FFFFFF" stroke="none" filter="url(#shadow)"/>
+
+                        <!-- Red Header Background -->
+                        <rect x="25" y="50" width="150" height="60" rx="20" ry="20"
+                              fill="#AC2220" stroke="none"/>
+                        <!-- Cover bottom corners of red header to make them square -->
+                        <rect x="25" y="90" width="150" height="20" fill="#AC2220" stroke="none"/>
+
+                        <!-- White Body Background -->
+                        <rect x="25" y="110" width="150" height="95" rx="20" ry="20"
+                              fill="#FFFFFF" stroke="none"/>
+                        <!-- Cover top corners of white body to make them square -->
+                        <rect x="25" y="110" width="150" height="20" fill="#FFFFFF" stroke="none"/>
+
+                        <!-- Spiral Binding -->
+                        <rect x="55" y="30" width="5" height="30" fill="#000"/>
+                        <rect x="85" y="30" width="5" height="30" fill="#000"/>
+                        <rect x="115" y="30" width="5" height="30" fill="#000"/>
+                        <rect x="145" y="30" width="5" height="30" fill="#000"/>
+
+                        <!-- ROI Text in Header -->
+                        <text x="100" y="90" font-family="Arial, sans-serif" font-size="28" font-weight="700"
+                              text-anchor="middle" fill="#FFFFFF">ROI</text>
+                    </svg>
+
+                    <div class="roi-value-inside">
+                        <span id="roi-years">--</span>
+                        <span class="label">YEAR</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resources Display -->
+        <section class="section section-resources">
+            <h2 style="position: relative;">Resources <span class="info-icon" data-popup="resources-popup">&#9432;</span>
+                <div class="info-popup" id="resources-popup">
+                    <p>Shows the annual resource consumption for each option based on your selected quantity and cleaning frequency.</p>
+                    <p><strong>Textile curtains:</strong> Energy (kWh) and water used per wash cycle.</p>
+                    <p><strong>Disposable curtains:</strong> Plastic waste generated per replacement.</p>
+                    <p><strong>Silentia screens:</strong> Only disinfectant and cleaning wipes needed.</p>
+                </div>
+            </h2>
+            <div class="resources-display" id="resources-output">
+                <p style="font-weight: 300;">Enter quantity to calculate</p>
+            </div>
+            <div class="units-toggle-wrapper">
+                <span class="toggle-group units-toggle">
+                    <button class="toggle-btn active" data-units="metric">Metric</button>
+                    <button class="toggle-btn" data-units="imperial">Imperial</button>
+                </span>
+            </div>
+        </section>
+    </div>
+
+    <script src="silentia-calculator.js"></script>
+</body>
+</html>
