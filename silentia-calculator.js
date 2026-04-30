@@ -472,9 +472,11 @@ function displayResults() {
     //   otherwise  → two decimals (preserves small values like 0.04)
     const fmtSilentia = (v) => {
         const n = Number(v);
-        if (n > 0.9) return Math.round(n).toString();
-        if (n > 0.09) return n.toFixed(1);
-        return n.toFixed(2);
+        let str;
+        if (n > 0.9) str = Math.round(n).toString();
+        else if (n > 0.09) str = n.toFixed(1);
+        else str = n.toFixed(2);
+        return imperial ? str : str.replace('.', ',');
     };
 
     // Silentia bar always uses imperial textile reference scale so it looks
